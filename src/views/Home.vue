@@ -199,7 +199,7 @@
                                 </div>
                                 <div class="discussions">
                                     <h1>Discussions</h1>
-                                    <Chats v-for="chats in chats.sort((a,b) => b.firebaseLastMessageAt.seconds - a.firebaseLastMessageAt.seconds)" :key="chats.id" :chats="chats" @chat-id="id => chatId = id" />
+                                    <Chats v-for="chats in chats.sort((a,b) => b.lastMessageAt.seconds - a.lastMessageAt.seconds)" :key="chats.id" :chats="chats" @chat-id="id => chatId = id" />
                                 </div>
                             </div>
                             <!-- End of Discussions -->
@@ -625,10 +625,12 @@
             </div>
         </div>
         <!-- End of Create Chat -->
-        <Chat v-if="chatId" :chatId="chatId" />
-        <div v-else class="hidden lg:flex justify-center items-center h-screen">
+        <KeepAlive :max="3">
+            <Chat v-if="chatId" :key="chatId" :chatId="chatId" :profile="chats.find(v => v.id == chatId).member" />
+        </KeepAlive>
+        <!-- <div v-else class="hidden lg:flex justify-center items-center h-screen">
             <h1>Start Conversation At Left</h1>
-        </div>
+        </div> -->
     </div> <!-- Layout -->
 </main></template>
 <script>
@@ -657,7 +659,7 @@ export default {
                     if (snap.type === "added") {
                         chats.value.push({
                             id: snap.doc.id,
-                            firebaseLastMessageAt: snap.doc.data().firebaseLastMessageAt,
+                            lastMessageAt: snap.doc.data().lastMessageAt,
                             lastMessage: snap.doc.data().lastMessage,
                             member: snap.doc.data().members.find(v => v.id != user.firebaseID)
                         })
@@ -666,7 +668,7 @@ export default {
                         let indexModified = chats.value.findIndex(v => v.id == snap.doc.id);
                         if (indexModified != -1) {
                             chats.value[indexModified].lastMessage = snap.doc.data().lastMessage;
-                            chats.value[indexModified].firebaseLastMessageAt = snap.doc.data().firebaseLastMessageAt;
+                            chats.value[indexModified].lastMessageAt = snap.doc.data().lastMessageAt;
                         }
                     }
                     if (snap.type === "removed") {

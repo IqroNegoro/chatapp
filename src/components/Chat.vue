@@ -9,17 +9,17 @@
                         <div class="container">
                             <div class="col-md-12">
                                 <div class="inside">
-                                    <a href="#"><img class="avatar-md" src="dist/img/avatars/avatar-female-5.jpg" data-toggle="tooltip" data-placement="top" title="Keith" alt="avatar"></a>
+                                    <a href="#"><img class="avatar-md" :src="profile.photoURL" referrerpolicy="no-referrer" data-toggle="tooltip" data-placement="top" title="Keith" alt="avatar"></a>
                                     <div class="status">
                                         <i class="material-icons online">fiber_manual_record</i>
                                     </div>
                                     <div class="data">
-                                        <h5><a href="#">Keith Morris</a></h5>
+                                        <h5><a href="#">{{profile.displayName}}</a></h5>
                                         <span>Active now</span>
                                     </div>
-                                    <button class="btn connect d-md-block d-none" name="1"><i class="material-icons md-30">phone_in_talk</i></button>
+                                    <!-- <button class="btn connect d-md-block d-none" name="1"><i class="material-icons md-30">phone_in_talk</i></button>
                                     <button class="btn connect d-md-block d-none" name="1"><i class="material-icons md-36">videocam</i></button>
-                                    <button class="btn d-md-block d-none"><i class="material-icons md-30">info</i></button>
+                                    <button class="btn d-md-block d-none"><i class="material-icons md-30">info</i></button> -->
                                     <div class="dropdown">
                                         <button class="btn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="material-icons md-30">more_vert</i></button>
                                         <div class="dropdown-menu dropdown-menu-right">
@@ -35,57 +35,14 @@
                             </div>
                         </div>
                     </div>
-                    <div class="content" id="content">
+                    <div class="content" id="content" v-if="chats">
                         <div class="container">
                             <div class="col-md-12">
-                                <!-- <div class="date">
-                                    <hr>
-                                    <span>Yesterday</span>
-                                    <hr>
-                                </div> -->
-                                <div class="message">
-                                    <div class="text-main">
-                                        <div class="text-group">
-                                            <div class="text">
-                                                <p>Great start guys, I've added some notes to the task. We may need to make some adjustments to the last couple of items - but no biggie!</p>
-                                            </div>
-                                        </div>
-                                        <span>11:07 PM</span>
-                                    </div>
-                                </div>
-                                <div class="date">
-                                    <hr>
-                                    <span>Today</span>
-                                    <hr>
-                                </div>
-                                <div class="message me">
-                                    <div class="text-main">
-                                        <div class="text-group me">
-                                            <div class="text me">
-                                                <p>Well done all. See you all at 2 for the kick-off meeting.</p>
-                                            </div>
-                                        </div>
-                                        <span>10:21 PM</span>
-                                    </div>
-                                </div>
+                                <Message v-for="chats in chats" :key="chats.id" :message="chats" />
                             </div>
                         </div>
                     </div>
-                    <div class="container">
-                        <div class="col-md-12">
-                            <div class="bottom">
-                                <form class="position-relative w-100">
-                                    <textarea class="form-control" placeholder="Start typing for reply..." rows="1"></textarea>
-                                    <button class="btn emoticons"><i class="material-icons">insert_emoticon</i></button>
-                                    <button type="submit" class="btn send"><i class="material-icons">send</i></button>
-                                </form>
-                                <label>
-                                    <input type="file">
-                                    <span class="btn attach d-sm-block d-none"><i class="material-icons">attach_file</i></span>
-                                </label> 
-                            </div>
-                        </div>
-                    </div>
+                    <Input :messageId="chatId" />
                 </div>
                 <!-- End of Chat -->
                 <!-- Start of Call -->
@@ -276,10 +233,63 @@
     </div>
 </template>
 <script>
+import { computed, watch, ref, onUnmounted, onMounted, onActivated, onDeactivated } from "vue";
+import { collection, limit, onSnapshot, query, orderBy } from 'firebase/firestore';
+import Message from "./Chats/Message";
+import Input from "./Chats/Input";
+import moment from "moment/moment";
+import db from '@/utils/firebase/init';
+import UserStore from "@/state/User";
 export default {
-    
+    name: "Chat",
+    components: {
+        Message,
+        Input
+    },
+    props: ["chatId", "profile"],
+    setup({chatId}) {
+        const user = UserStore();
+        let snap = "";
+        let chats = ref([]);
+
+        const showFormattedDate = (date) => {
+            const options = {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+            };
+            return new Date(date).toLocaleDateString('id-ID', options);
+        };
+     
+        const q = query(collection(db, "messages", chatId, "messages"), limit(10), orderBy("sendAt", "asc"))
+
+        snap = onSnapshot(q, snapShot => {
+            console.log(snapShot.size)
+            snapShot.docChanges().forEach(snap => {
+                console.log(snap.doc.data())
+                if (snap.type === "added") {
+                    chats.value.push({
+                        id: snap.doc.id,
+                        sendAt: snap.doc.data().sendAt,
+                        message: snap.doc.data().message,
+                        isRead: snap.doc.data().isRead,
+                        uid: snap.doc.data().uid
+                    })
+                }
+                if (snap.type === "modified") {
+                    let indexModified = chats.value.findIndex(v => v.id == snap.doc.id);
+                    if (indexModified != -1) {
+                        chats.value.splice(indexModified, 1, {...snap.doc.data(), id: snap.doc.id, sendAt: snap.doc.data().sendAt})
+                    }
+                }
+                if (snap.type === "removed") {
+                    chats.value.splice(chats.value.findIndex(v => v.id == snap.doc.id), 1)
+                }
+            });
+        })
+
+        return { chats, user, moment, showFormattedDate }
+    }
 }
 </script>
-<style lang="">
-    
-</style>

@@ -12,7 +12,7 @@
                 </div> -->
             <div class="data">
                 <h5>{{ chats.member.displayName }}</h5>
-                <span>{{ moment().calendar(chats.firebaseLastMessageAt.seconds) }}</span>
+                <span>{{ moment().calendar(chats.lastMessageAt) }}</span>
                 <p>{{ chats.lastMessage }}</p>
             </div>
         </a>

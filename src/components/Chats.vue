@@ -10,10 +10,10 @@
             <!-- <div class="new bg-yellow">
                     <span>+7</span>
                 </div> -->
-            <div class="data">
+            <div class="data truncate">
                 <h5>{{ chats.member.displayName }}</h5>
                 <span>{{ moment().calendar(chats.lastMessageAt) }}</span>
-                <p>{{ chats.lastMessage }}</p>
+                <p class="truncate">{{ chats.lastMessage }}</p>
             </div>
         </a>
     </div>

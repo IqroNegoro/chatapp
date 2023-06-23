@@ -199,7 +199,7 @@
                                 </div>
                                 <div class="discussions">
                                     <h1>Discussions</h1>
-                                    <Chats v-for="chats in chats.sort((a,b) => b.lastMessageAt.seconds - a.lastMessageAt.seconds)" :key="chats.id" :chats="chats" @chat-id="id => chatId = id" />
+                                    <Chats v-for="chats in chats.sort((a,b) => b.lastMessageAt - a.lastMessageAt)" :key="chats.id" :chats="chats" @chat-id="id => chatId = id" />
                                 </div>
                             </div>
                             <!-- End of Discussions -->

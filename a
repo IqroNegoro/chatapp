@@ -35,18 +35,10 @@
                             </div>
                         </div>
                     </div>
-                    <div class="content" id="content" v-if="chats" ref="container">
+                    <div class="content" id="content" v-if="chats">
                         <div class="container">
                             <div class="col-md-12">
-                                <div ref="infiniteScroll" class="wave w-full flex items-center justify-center" id="infiniteScroll" :class="{'hidden': showInfinite}">
-                                    <div>
-                                        <span class="dot"></span>
-                                        <span class="dot"></span>
-                                        <span class="dot"></span>
-                                    </div>
-                                </div>
-                                <p class="text-center" v-if="showInfinite">Ini Chat Terakhir Mu</p>
-                                <Message v-for="chats in chats.sort((a,b) => a.sendAt - b.sendAt)" :key="chats.id" :message="chats" />
+                                <Message v-for="chats in chats" :key="chats.id" :message="chats" />
                             </div>
                         </div>
                     </div>
@@ -241,8 +233,8 @@
     </div>
 </template>
 <script>
-import { ref, onMounted, onUpdated } from "vue";
-import { collection, limit, onSnapshot, query, orderBy, getCountFromServer, startAfter } from 'firebase/firestore';
+import { computed, watch, ref, onUnmounted, onMounted, onActivated, onDeactivated } from "vue";
+import { collection, limit, onSnapshot, query, orderBy } from 'firebase/firestore';
 import Message from "./Chats/Message";
 import Input from "./Chats/Input";
 import moment from "moment/moment";
@@ -257,127 +249,23 @@ export default {
     props: ["chatId", "profile"],
     setup({chatId}) {
         const user = UserStore();
-        let LIMIT_DOCS = 0;
-        let container = ref(null);
-        let infiniteScroll = ref(null);
-        let showInfinite = ref(false);
-        let lastDoc = ref(null);
         let snap = "";
         let chats = ref([]);
         // let chats = ref([
         //     {
         //         id: "RyBaClK45jFjojvN94NP",
-        //         sendAt: 160000000,
+        //         firebaseSendAt: 160000000,
         //         message: "Lucu Kali",
         //         isRead: false,
         //         uid: "x1Ruq8oy4Ff803OEWzKAB9kh7dG3"
         //     },
         //     {
         //         id: "CicSQg5uH328CUP2yAor",
-        //         sendAt: 160000000,
+        //         firebaseSendAt: 160000000,
         //         message: "Lucu Lo",
         //         isRead: false,
         //         uid: "L6FEsIR3Tch2bTij3JWdvmcNff13"
-        //     },
-        //     {
-        //         id: "RyBaClK45jFjojvN94NP",
-        //         sendAt: 160000000,
-        //         message: "Lucu Kali",
-        //         isRead: false,
-        //         uid: "x1Ruq8oy4Ff803OEWzKAB9kh7dG3"
-        //     },
-        //     {
-        //         id: "CicSQg5uH328CUP2yAor",
-        //         sendAt: 160000000,
-        //         message: "Lucu Lo",
-        //         isRead: false,
-        //         uid: "L6FEsIR3Tch2bTij3JWdvmcNff13"
-        //     },
-        //     {
-        //         id: "CicSQg5uH328CUP2yAor",
-        //         sendAt: 160000000,
-        //         message: "Lucu Lo",
-        //         isRead: false,
-        //         uid: "L6FEsIR3Tch2bTij3JWdvmcNff13"
-        //     },
-        //     {
-        //         id: "CicSQg5uH328CUP2yAor",
-        //         sendAt: 160000000,
-        //         message: "Lucu Lo",
-        //         isRead: false,
-        //         uid: "L6FEsIR3Tch2bTij3JWdvmcNff13"
-        //     },
-        //     {
-        //         id: "CicSQg5uH328CUP2yAor",
-        //         sendAt: 160000000,
-        //         message: "Lucu Lo",
-        //         isRead: false,
-        //         uid: "L6FEsIR3Tch2bTij3JWdvmcNff13"
-        //     },
-        //     {
-        //         id: "CicSQg5uH328CUP2yAor",
-        //         sendAt: 160000000,
-        //         message: "Lucu Lo",
-        //         isRead: false,
-        //         uid: "L6FEsIR3Tch2bTij3JWdvmcNff13"
-        //     },
-        //     {
-        //         id: "RyBaClK45jFjojvN94NP",
-        //         sendAt: 160000000,
-        //         message: "Lucu Kali",
-        //         isRead: false,
-        //         uid: "x1Ruq8oy4Ff803OEWzKAB9kh7dG3"
-        //     },
-        //     {
-        //         id: "CicSQg5uH328CUP2yAor",
-        //         sendAt: 160000000,
-        //         message: "Lucu Lo",
-        //         isRead: false,
-        //         uid: "L6FEsIR3Tch2bTij3JWdvmcNff13"
-        //     },
-        //     {
-        //         id: "RyBaClK45jFjojvN94NP",
-        //         sendAt: 160000000,
-        //         message: "Lucu Kali",
-        //         isRead: false,
-        //         uid: "x1Ruq8oy4Ff803OEWzKAB9kh7dG3"
-        //     },
-        //     {
-        //         id: "CicSQg5uH328CUP2yAor",
-        //         sendAt: 160000000,
-        //         message: "Lucu Lo",
-        //         isRead: false,
-        //         uid: "L6FEsIR3Tch2bTij3JWdvmcNff13"
-        //     },
-        //     {
-        //         id: "RyBaClK45jFjojvN94NP",
-        //         sendAt: 160000000,
-        //         message: "Lucu Kali",
-        //         isRead: false,
-        //         uid: "x1Ruq8oy4Ff803OEWzKAB9kh7dG3"
-        //     },
-        //     {
-        //         // OFFSET HEIGHT
-        //         id: "CicSQg5uH328CUP2yAor",
-        //         sendAt: 160000000,
-        //         message: "Lucu Lo",
-        //         isRead: false,
-        //         uid: "L6FEsIR3Tch2bTij3JWdvmcNff13"
-        //     },
-        //     {
-        //         id: "RyBaClK45jFjojvN94NP",
-        //         sendAt: 160000000,
-        //         message: "Lucu Kali",
-        //         isRead: false,
-        //         uid: "x1Ruq8oy4Ff803OEWzKAB9kh7dG3"
-        //     },
-        //     {
-        //         id: "CicSQg5uH328CUP2yAor",
-        //         sendAt: 160000000,
-        //         message: "KOAWKOAWOAWKOAWKOAW",
-        //         isRead: false,
-        //         uid: "L6FEsIR3Tch2bTij3JWdvmcNff13"
-        //     },
+        //     }
         // ]);
 
         const showFormattedDate = (date) => {
@@ -390,84 +278,34 @@ export default {
             return new Date(date).toLocaleDateString('id-ID', options);
         };
      
-        // const q = query(collection(db, "messages", chatId, "messages"), limit(LIMIT_DOCS), orderBy("sendAt", "desc"))
+        const q = query(collection(db, "messages", chatId, "messages"), limit(10), orderBy("sendAt", "asc"))
 
-        // snap = onSnapshot(q, snapShot => {
-        //     let size = snapShot.size
-        //     lastDoc.value = snapShot.docs[snapShot.docs.length - 1];
-        //     console.log(lastDoc.value.data().message)
-        //     snapShot.docChanges().forEach(snap => {
-        //         if (snap.type === "added") {
-        //             chats.value.unshift({
-        //                 id: snap.doc.id,
-        //                 sendAt: snap.doc.data().sendAt,
-        //                 message: snap.doc.data().message,
-        //                 isRead: snap.doc.data().isRead,
-        //                 uid: snap.doc.data().uid
-        //             })
-        //         }
-        //         if (snap.type === "modified") {
-        //             let indexModified = chats.value.findIndex(v => v.id == snap.doc.id);
-        //             if (indexModified != -1) {
-        //                 chats.value.splice(indexModified, 1, {...snap.doc.data(), id: snap.doc.id, sendAt: snap.doc.data().sendAt})
-        //             }
-        //         }
-        //         if (snap.type === "removed") {
-        //             chats.value.splice(chats.value.findIndex(v => v.id == snap.doc.id), 1)
-        //         }
-        //     });
-        // })
-
-        onMounted(() => {
-            let observer = new IntersectionObserver((entries, observer) => {
-                entries.forEach(async v => {
-                    if (v.isIntersecting && v.target.id == "infiniteScroll") {
-                        LIMIT_DOCS += 10;
-                        const q = query(collection(db, "messages", chatId, "messages"), limit(LIMIT_DOCS), orderBy("sendAt", "desc"))
-                        let totalCollection = await getCountFromServer(q);
-                        if (totalCollection.data().count != chats.value.length) {
-                            if (snap) snap();
-                            snap = onSnapshot(q, snapShot => {
-                                snapShot.docChanges().forEach(snap => {
-                                    if (snap.type === "added") {
-                                        let indexChat = chats.value.findIndex(v => v.id == snap.doc.id);
-                                        if (indexChat == -1) {
-                                            chats.value.unshift({
-                                                id: snap.doc.id,
-                                                sendAt: snap.doc.data().sendAt,
-                                                message: snap.doc.data().message,
-                                                isRead: snap.doc.data().isRead,
-                                                uid: snap.doc.data().uid
-                                            })
-                                        }
-                                    }
-                                    if (snap.type === "modified") {
-                                        let indexModified = chats.value.findIndex(v => v.id == snap.doc.id);
-                                        if (indexModified != -1) {
-                                            chats.value.splice(indexModified, 1, {...snap.doc.data(), id: snap.doc.id, sendAt: snap.doc.data().sendAt})
-                                        }
-                                    }
-                                    if (snap.type === "removed") {
-                                        chats.value.splice(chats.value.findIndex(v => v.id == snap.doc.id), 1)
-                                    }
-                                });
-                            }, error => console.log(error))
-                        } else {
-                            showInfinite.value = true;
-                        }
+        snap = onSnapshot(q, snapShot => {
+            console.log(snapShot.size)
+            snapShot.docChanges().forEach(snap => {
+                console.log(snap.doc.data())
+                if (snap.type === "added") {
+                    chats.value.push({
+                        id: snap.doc.id,
+                        sendAt: snap.doc.data().sendAt,
+                        message: snap.doc.data().message,
+                        isRead: snap.doc.data().isRead,
+                        uid: snap.doc.data().uid
+                    })
+                }
+                if (snap.type === "modified") {
+                    let indexModified = chats.value.findIndex(v => v.id == snap.doc.id);
+                    if (indexModified != -1) {
+                        chats.value.splice(indexModified, 1, {...snap.doc.data(), id: snap.doc.id, sendAt: snap.doc.data().sendAt})
                     }
-                })
-            }, {
-                root: container.value,
-                rootMargin: "0px",
-                threshold: 1
+                }
+                if (snap.type === "removed") {
+                    chats.value.splice(chats.value.findIndex(v => v.id == snap.doc.id), 1)
+                }
             });
-
-            observer.observe(infiniteScroll.value)
-            setTimeout(() => container.value.scrollTo(0,9999), 500)
         })
 
-        return { chats, user, moment, showFormattedDate, container, infiniteScroll, showInfinite }
+        return { chats, user, moment, showFormattedDate }
     }
 }
 </script>

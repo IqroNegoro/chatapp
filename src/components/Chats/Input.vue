@@ -41,7 +41,6 @@ export default {
                     lastMessage: message.value
                 });
                 message.value = "";
-                console.log(docs.id)
             } catch (err) {
                 console.log(err)
             }

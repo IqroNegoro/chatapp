@@ -11,6 +11,7 @@
     "firebase": "^9.22.2",
     "mitt": "^3.0.0",
     "moment": "^2.29.4",
+    "nanoid": "^4.0.2",
     "pinia": "^2.1.4",
     "sweetalert2": "^11.7.12",
     "tailwindcss": "^3.3.2",

@@ -14,10 +14,20 @@ import "@/dist/js/vendor/popper.min.js";
 import "@/dist/js/vendor/jquery-slim.min.js";
 
 let emitter = mitt();
+let pinia = createPinia();
 let app = createApp(App);
 
+let pluginPackage = () => {
+    return {
+        emitter
+    }
+}
+
+pinia.use(pluginPackage);
 app.provide("emitter", emitter);
 
 app.use(router);
-app.use(createPinia())
+
+
+app.use(pinia);
 app.mount('#app')

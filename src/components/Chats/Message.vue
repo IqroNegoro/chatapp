@@ -2,9 +2,14 @@
     <div class="message" :class="{'me': message.uid == user.uid}">
         <div class="text-main">
             <div class="text-group" :class="{'me': message.uid == user.uid}">
-                <div class="text text-black" :class="{'me text-white': message.uid == user.uid}">
+                <div class="text text-black" :class="{'me text-white': message.uid == user.uid}" :id="message.id" @click.prevent.stop="handleClick" @contextmenu.prevent.stop="handleClick">
                     <p>{{message.message}}</p>
                 </div>
+                <div class="dropdown hidden absolute" v-if="message.uid == user.uid">
+                    <div class="dropdown-menu dropdown-menu-right show">
+                        <button class="dropdown-item" @click="$emit('deleteMessage', message.id)"><i class="material-icons">delete</i>Delete Chat</button>
+                    </div>
+                </div> 
             </div>
             <!-- <span>{{message.sendAt}}</span> -->
         </div>
@@ -24,7 +29,11 @@ export default {
     setup({message}) {
         const user = UserStore();
 
-        return { user }
+        const handleClick = e => {
+            e.target.nextElementSibling?.classList.remove('hidden');
+        }
+
+        return { user, handleClick }
     }
 }
 </script>

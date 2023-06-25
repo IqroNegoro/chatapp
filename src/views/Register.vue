@@ -60,14 +60,16 @@ import db from "@/utils/firebase/init";
 import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
 import Swal from "sweetalert2";
 import router from "@/router";
+import { customAlphabet } from "nanoid";
 
 let emitter = inject("emitter");
 
-let fullName = ref("Nadila Vira");
-let email = ref("nadilaviragabriella@gmail.com");
-let password = ref("nadilavira");
+let fullName = ref("");
+let email = ref("");
+let password = ref("");
 
 let error = ref(null);
+let nanoid = customAlphabet("abcdefghijklmnopqrstuvwxyz123456789", 10)
 
 const handleSignUp = async () => {
     emitter.emit("isLoading", true);
@@ -81,8 +83,10 @@ const handleSignUp = async () => {
             const docRef = await addDoc(collection(db, "users"), {
                     displayName: fullName.value,
                     email: email.value,
-                    photoURL: res.user.photoURL,
-                    uid: res.user.uid
+                    photoURL: res.user.photoURL || 'img/noimage.png',
+                    uid: res.user.uid,
+                    chats: ["empty"],
+                    inviteID: nanoid()
                 })
 
                 Swal.fire({
@@ -92,15 +96,16 @@ const handleSignUp = async () => {
                 });
 
                 router.push({name: 'login'});
+                emitter.emit("isLoading", false);
             }).catch(err => {
                 if (err.code == 'auth/email-already-in-use') {
                     error.value = "Email Tidak Tersedia!"
                 }
+                emitter.emit("isLoading", false);
             })
     } else {
         error.value = "Email Tidak Tersedia!"
     }
-    emitter.emit("isLoading", false);
 }
 
 </script>

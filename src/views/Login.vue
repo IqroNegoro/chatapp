@@ -24,7 +24,7 @@
                                         <button class="btn icon"><i class="material-icons">lock_outline</i></button>
                                     </div>
                                     <p class="text-red-500" v-if="error" @click="e => e.target.classList.add('hidden')">{{ error }}</p>
-                                    <button type="submit" class="btn button" @click="signInWithEmail">Sign In</button>
+                                    <button type="button" class="btn button" @click="signInWithEmail">Sign In</button>
                                     <div class="callout">
                                         <span>Don't have account? <router-link :to="{name: 'register'}">Create Account</router-link></span>
                                     </div>
@@ -52,62 +52,24 @@
     </main>
 </template>
 <script>
-import db from "@/utils/firebase/init";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-import { query, limit, where, collection, getDocs } from "firebase/firestore";
 import UserStore from "@/state/User";
-import router from "@/router";
 import { inject, ref } from "vue";
-
 export default {
     name: "Login",
     setup() {
         let userState = UserStore();
         let emitter = inject("emitter");
         
-        let email = ref("iqronegoro0@gmail.com");
-        let password = ref("proevening11");
+        let email = ref("freesia@gmail.com");
+        let password = ref("freesia");
         let error = ref(null);
         
         const signInWithEmail = () => {
-            emitter.emit("isLoading", true); 
-            let auth = getAuth();
-            signInWithEmailAndPassword(auth, email.value, password.value).then(async res => {
-                // const credential = GoogleAuthProvider.credentialFromResult(res);
-                // const token = credential.accessToken;
-                const q = query(collection(db, "users"), where("email", "==", email.value), limit(1));
-        
-                const doc = await getDocs(q);
+            emitter.on("loginError", err => error.value = err);
+            let login = userState.signInWithEmail(email.value, password.value)
+        };
 
-                doc.forEach(v => userState.$patch({
-                    firebaseID: v.id,
-                    displayName: v.data().displayName,
-                    email: v.data().email,
-                    photoURL: v.data().photoURL,
-                    uid: v.data().uid,
-                    chats: v.data().chats,
-                    authenticated: true
-                }))
-                
-                router.push({name: "home"});
-                emitter.emit("isLoading", false);
-            }).catch(err => {
-                emitter.emit("isLoading", false);
-                if (err.code == 'auth/wrong-password') {
-                    error.value = "Email Or Password Wrong!";
-                    return;
-                }
-
-                if (err.code == 'auth/user-not-found') {
-                    error.value = "Account Doesnt Exists!";
-                    return;
-                }
-
-                error.value = "Something Went Wrong";
-            });
-        }
-
-        return { signInWithEmail, email, password, error }
+        return { userState, signInWithEmail, email, password, error }
     }
 }
 

@@ -6,13 +6,12 @@
                 <div class="container">
                     <div class="inside">
                         <div class="nav nav-tab menu">
-                            <button class="btn"><img class="avatar-xl" :src="user.photoURL" referrerpolicy="no-referrer"
-                                    alt="avatar"></button>
-                            <a href="#members" data-toggle="tab"><i class="material-icons">account_circle</i></a>
+                            <button class="btn">
+                                <img class="avatar-xl" :src="user.photoURL || 'img/noimage.png'" referrerpolicy="no-referrer" alt="avatar">
+                            </button>
                             <a href="#discussions" data-toggle="tab" class="active"><i
                                     class="material-icons active">chat_bubble_outline</i></a>
-                            <a href="#settings" data-toggle="tab"><i class="material-icons">settings</i></a>
-                            <button class="btn power" onclick="visitPage();"><i
+                            <button class="btn power" @click="user.logout"><i
                                     class="material-icons">power_settings_new</i></button>
                         </div>
                     </div>
@@ -24,159 +23,6 @@
                 <div class="container">
                     <div class="col-md-12">
                         <div class="tab-content">
-                            <!-- Start of Contacts -->
-                            <div class="tab-pane fade" id="members">
-                                <div class="search">
-                                    <form class="form-inline position-relative">
-                                        <input type="search" class="form-control" id="people"
-                                            placeholder="Search for people...">
-                                        <button type="button" class="btn btn-link loop"><i
-                                                class="material-icons">search</i></button>
-                                    </form>
-                                    <button class="btn create" data-toggle="modal" data-target="#exampleModalCenter"><i
-                                            class="material-icons">person_add</i></button>
-                                </div>
-                                <div class="list-group sort">
-                                    <button class="btn filterMembersBtn active show" data-toggle="list"
-                                        data-filter="all">All</button>
-                                    <button class="btn filterMembersBtn" data-toggle="list"
-                                        data-filter="online">Online</button>
-                                    <button class="btn filterMembersBtn" data-toggle="list"
-                                        data-filter="offline">Offline</button>
-                                </div>
-                                <div class="contacts">
-                                    <h1>Contacts</h1>
-                                    <div class="list-group" id="contacts" role="tablist">
-                                        <a href="#" class="filterMembers all online contact" data-toggle="list">
-                                            <img class="avatar-md" src="dist/img/avatars/avatar-female-1.jpg"
-                                                data-toggle="tooltip" data-placement="top" title="Janette" alt="avatar">
-                                            <div class="status">
-                                                <i class="material-icons online">fiber_manual_record</i>
-                                            </div>
-                                            <div class="data">
-                                                <h5>Janette Dalton</h5>
-                                                <p>Sofia, Bulgaria</p>
-                                            </div>
-                                            <div class="person-add">
-                                                <i class="material-icons">person</i>
-                                            </div>
-                                        </a>
-                                        <a href="#" class="filterMembers all online contact" data-toggle="list">
-                                            <img class="avatar-md" src="dist/img/avatars/avatar-male-1.jpg"
-                                                data-toggle="tooltip" data-placement="top" title="Michael" alt="avatar">
-                                            <div class="status">
-                                                <i class="material-icons online">fiber_manual_record</i>
-                                            </div>
-                                            <div class="data">
-                                                <h5>Michael Knudsen</h5>
-                                                <p>Washington, USA</p>
-                                            </div>
-                                            <div class="person-add">
-                                                <i class="material-icons">person</i>
-                                            </div>
-                                        </a>
-                                        <a href="#" class="filterMembers all online contact" data-toggle="list">
-                                            <img class="avatar-md" src="dist/img/avatars/avatar-female-2.jpg"
-                                                data-toggle="tooltip" data-placement="top" title="Lean" alt="avatar">
-                                            <div class="status">
-                                                <i class="material-icons online">fiber_manual_record</i>
-                                            </div>
-                                            <div class="data">
-                                                <h5>Lean Avent</h5>
-                                                <p>Shanghai, China</p>
-                                            </div>
-                                            <div class="person-add">
-                                                <i class="material-icons">person</i>
-                                            </div>
-                                        </a>
-                                        <a href="#" class="filterMembers all online contact" data-toggle="list">
-                                            <img class="avatar-md" src="dist/img/avatars/avatar-male-2.jpg"
-                                                data-toggle="tooltip" data-placement="top" title="Mariette" alt="avatar">
-                                            <div class="status">
-                                                <i class="material-icons online">fiber_manual_record</i>
-                                            </div>
-                                            <div class="data">
-                                                <h5>Mariette Toles</h5>
-                                                <p>Helena, Montana</p>
-                                            </div>
-                                            <div class="person-add">
-                                                <i class="material-icons">person</i>
-                                            </div>
-                                        </a>
-                                        <a href="#" class="filterMembers all online contact" data-toggle="list">
-                                            <img class="avatar-md" src="dist/img/avatars/avatar-female-3.jpg"
-                                                data-toggle="tooltip" data-placement="top" title="Harmony" alt="avatar">
-                                            <div class="status">
-                                                <i class="material-icons online">fiber_manual_record</i>
-                                            </div>
-                                            <div class="data">
-                                                <h5>Harmony Otero</h5>
-                                                <p>Indore, India</p>
-                                            </div>
-                                            <div class="person-add">
-                                                <i class="material-icons">person</i>
-                                            </div>
-                                        </a>
-                                        <a href="#" class="filterMembers all offline contact" data-toggle="list">
-                                            <img class="avatar-md" src="dist/img/avatars/avatar-female-5.jpg"
-                                                data-toggle="tooltip" data-placement="top" title="Keith" alt="avatar">
-                                            <div class="status">
-                                                <i class="material-icons offline">fiber_manual_record</i>
-                                            </div>
-                                            <div class="data">
-                                                <h5>Keith Morris</h5>
-                                                <p>Chisinau, Moldova</p>
-                                            </div>
-                                            <div class="person-add">
-                                                <i class="material-icons">person</i>
-                                            </div>
-                                        </a>
-                                        <a href="#" class="filterMembers all offline contact" data-toggle="list">
-                                            <img class="avatar-md" src="dist/img/avatars/avatar-female-6.jpg"
-                                                data-toggle="tooltip" data-placement="top" title="Louis" alt="avatar">
-                                            <div class="status">
-                                                <i class="material-icons offline">fiber_manual_record</i>
-                                            </div>
-                                            <div class="data">
-                                                <h5>Louis Martinez</h5>
-                                                <p>Vienna, Austria</p>
-                                            </div>
-                                            <div class="person-add">
-                                                <i class="material-icons">person</i>
-                                            </div>
-                                        </a>
-                                        <a href="#" class="filterMembers all offline contact" data-toggle="list">
-                                            <img class="avatar-md" src="dist/img/avatars/avatar-male-3.jpg"
-                                                data-toggle="tooltip" data-placement="top" title="Ryan" alt="avatar">
-                                            <div class="status">
-                                                <i class="material-icons offline">fiber_manual_record</i>
-                                            </div>
-                                            <div class="data">
-                                                <h5>Ryan Foster</h5>
-                                                <p>Oslo, Norway</p>
-                                            </div>
-                                            <div class="person-add">
-                                                <i class="material-icons">person</i>
-                                            </div>
-                                        </a>
-                                        <a href="#" class="filterMembers all offline contact" data-toggle="list">
-                                            <img class="avatar-md" src="dist/img/avatars/avatar-male-4.jpg"
-                                                data-toggle="tooltip" data-placement="top" title="Mildred" alt="avatar">
-                                            <div class="status">
-                                                <i class="material-icons offline">fiber_manual_record</i>
-                                            </div>
-                                            <div class="data">
-                                                <h5>Mildred Bennett</h5>
-                                                <p>London, United Kingdom</p>
-                                            </div>
-                                            <div class="person-add">
-                                                <i class="material-icons">person</i>
-                                            </div>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- End of Contacts -->
                             <!-- Start of Discussions -->
                             <div id="discussions" class="tab-pane fade active show">
                                 <div class="search">
@@ -186,501 +32,90 @@
                                         <button type="button" class="btn btn-link loop"><i
                                                 class="material-icons">search</i></button>
                                     </form>
-                                    <button class="btn create" data-toggle="modal" data-target="#startnewchat"><i
-                                            class="material-icons">create</i></button>
-                                </div>
-                                <div class="list-group sort">
-                                    <button class="btn filterDiscussionsBtn active show" data-toggle="list"
-                                        data-filter="all">All</button>
-                                    <button class="btn filterDiscussionsBtn" data-toggle="list"
-                                        data-filter="read">Read</button>
-                                    <button class="btn filterDiscussionsBtn" data-toggle="list"
-                                        data-filter="unread">Unread</button>
+                                    <button class="btn create" @click="createStatus = true"><i class="material-icons">create</i></button>
                                 </div>
                                 <div class="discussions">
                                     <h1>Discussions</h1>
                                     <Chats v-for="chats in chats.sort((a,b) => b.lastMessageAt - a.lastMessageAt)" :key="chats.id" :chats="chats" @chat-id="id => chatId = id" />
+                                    <div v-if="!chats.length">
+                                        <p class="text-center">There No Discussions Yet</p>
+                                        <p class="text-center">Create New Chat!</p>
+										<button class="mx-auto block px-2 pt-1 shadow-sm rounded-full mt-2 outline-none" @click="createStatus = true"><i class="bx bx-pencil text-2xl"></i></button>
+                                    </div>
                                 </div>
                             </div>
                             <!-- End of Discussions -->
-                            <!-- Start of Settings -->
-                            <div class="tab-pane fade" id="settings">
-                                <div class="settings">
-                                    <div class="profile">
-                                        <img class="avatar-xl" src="dist/img/avatars/avatar-male-1.jpg" alt="avatar">
-                                        <h1><a href="#">Michael Knudsen</a></h1>
-                                        <span>Helena, Montana</span>
-                                        <div class="stats">
-                                            <div class="item">
-                                                <h2>122</h2>
-                                                <h3>Fellas</h3>
-                                            </div>
-                                            <div class="item">
-                                                <h2>305</h2>
-                                                <h3>Chats</h3>
-                                            </div>
-                                            <div class="item">
-                                                <h2>1538</h2>
-                                                <h3>Posts</h3>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="categories" id="accordionSettings">
-                                        <h1>Settings</h1>
-                                        <!-- Start of My Account -->
-                                        <div class="category">
-                                            <a href="#" class="title collapsed" id="headingOne" data-toggle="collapse"
-                                                data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                                <i class="material-icons md-30 online">person_outline</i>
-                                                <div class="data">
-                                                    <h5>My Account</h5>
-                                                    <p>Update your profile details</p>
-                                                </div>
-                                                <i class="material-icons">keyboard_arrow_right</i>
-                                            </a>
-                                            <div class="collapse" id="collapseOne" aria-labelledby="headingOne"
-                                                data-parent="#accordionSettings">
-                                                <div class="content">
-                                                    <div class="upload">
-                                                        <div class="data">
-                                                            <img class="avatar-xl" src="dist/img/avatars/avatar-male-1.jpg"
-                                                                alt="image">
-                                                            <label>
-                                                                <input type="file">
-                                                                <span class="btn button">Upload avatar</span>
-                                                            </label>
-                                                        </div>
-                                                        <p>For best results, use an image at least 256px by 256px in either
-                                                            .jpg or .png format!</p>
-                                                    </div>
-                                                    <form>
-                                                        <div class="parent">
-                                                            <div class="field">
-                                                                <label for="firstName">First name <span>*</span></label>
-                                                                <input type="text" class="form-control" id="firstName"
-                                                                    placeholder="First name" value="Michael" required>
-                                                            </div>
-                                                            <div class="field">
-                                                                <label for="lastName">Last name <span>*</span></label>
-                                                                <input type="text" class="form-control" id="lastName"
-                                                                    placeholder="Last name" value="Knudsen" required>
-                                                            </div>
-                                                        </div>
-                                                        <div class="field">
-                                                            <label for="email">Email <span>*</span></label>
-                                                            <input type="email" class="form-control" id="email"
-                                                                placeholder="Enter your email address"
-                                                                value="michael@gmail.com" required>
-                                                        </div>
-                                                        <div class="field">
-                                                            <label for="password">Password</label>
-                                                            <input type="password" class="form-control" id="password"
-                                                                placeholder="Enter a new password" value="password"
-                                                                required>
-                                                        </div>
-                                                        <div class="field">
-                                                            <label for="location">Location</label>
-                                                            <input type="text" class="form-control" id="location"
-                                                                placeholder="Enter your location" value="Helena, Montana"
-                                                                required>
-                                                        </div>
-                                                        <button class="btn btn-link w-100">Delete Account</button>
-                                                        <button type="submit" class="btn button w-100">Apply</button>
-                                                    </form>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!-- End of My Account -->
-                                        <!-- Start of Chat History -->
-                                        <div class="category">
-                                            <a href="#" class="title collapsed" id="headingTwo" data-toggle="collapse"
-                                                data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
-                                                <i class="material-icons md-30 online">mail_outline</i>
-                                                <div class="data">
-                                                    <h5>Chats</h5>
-                                                    <p>Check your chat history</p>
-                                                </div>
-                                                <i class="material-icons">keyboard_arrow_right</i>
-                                            </a>
-                                            <div class="collapse" id="collapseTwo" aria-labelledby="headingTwo"
-                                                data-parent="#accordionSettings">
-                                                <div class="content layer">
-                                                    <div class="history">
-                                                        <p>When you clear your conversation history, the messages will be
-                                                            deleted from your own device.</p>
-                                                        <p>The messages won't be deleted or cleared on the devices of the
-                                                            people you chatted with.</p>
-                                                        <div class="custom-control custom-checkbox">
-                                                            <input type="checkbox" class="custom-control-input"
-                                                                id="same-address">
-                                                            <label class="custom-control-label" for="same-address">Hide will
-                                                                remove your chat history from the recent list.</label>
-                                                        </div>
-                                                        <div class="custom-control custom-checkbox">
-                                                            <input type="checkbox" class="custom-control-input"
-                                                                id="save-info">
-                                                            <label class="custom-control-label" for="save-info">Delete will
-                                                                remove your chat history from the device.</label>
-                                                        </div>
-                                                        <button type="submit" class="btn button w-100">Clear
-                                                            blah-blah</button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!-- End of Chat History -->
-                                        <!-- Start of Connections -->
-                                        <div class="category">
-                                            <a href="#" class="title collapsed" id="headingFour" data-toggle="collapse"
-                                                data-target="#collapseFour" aria-expanded="true"
-                                                aria-controls="collapseFour">
-                                                <i class="material-icons md-30 online">sync</i>
-                                                <div class="data">
-                                                    <h5>Connections</h5>
-                                                    <p>Sync your social accounts</p>
-                                                </div>
-                                                <i class="material-icons">keyboard_arrow_right</i>
-                                            </a>
-                                            <div class="collapse" id="collapseFour" aria-labelledby="headingFour"
-                                                data-parent="#accordionSettings">
-                                                <div class="content">
-                                                    <div class="app">
-                                                        <img src="dist/img/integrations/slack.svg" alt="app">
-                                                        <div class="permissions">
-                                                            <h5>Skrill</h5>
-                                                            <p>Read, Write, Comment</p>
-                                                        </div>
-                                                        <label class="switch">
-                                                            <input type="checkbox" checked>
-                                                            <span class="slider round"></span>
-                                                        </label>
-                                                    </div>
-                                                    <div class="app">
-                                                        <img src="dist/img/integrations/dropbox.svg" alt="app">
-                                                        <div class="permissions">
-                                                            <h5>Dropbox</h5>
-                                                            <p>Read, Write, Upload</p>
-                                                        </div>
-                                                        <label class="switch">
-                                                            <input type="checkbox" checked>
-                                                            <span class="slider round"></span>
-                                                        </label>
-                                                    </div>
-                                                    <div class="app">
-                                                        <img src="dist/img/integrations/drive.svg" alt="app">
-                                                        <div class="permissions">
-                                                            <h5>Google Drive</h5>
-                                                            <p>No permissions set</p>
-                                                        </div>
-                                                        <label class="switch">
-                                                            <input type="checkbox">
-                                                            <span class="slider round"></span>
-                                                        </label>
-                                                    </div>
-                                                    <div class="app">
-                                                        <img src="dist/img/integrations/trello.svg" alt="app">
-                                                        <div class="permissions">
-                                                            <h5>Trello</h5>
-                                                            <p>No permissions set</p>
-                                                        </div>
-                                                        <label class="switch">
-                                                            <input type="checkbox">
-                                                            <span class="slider round"></span>
-                                                        </label>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!-- End of Connections -->
-                                        <!-- Start of Appearance Settings -->
-                                        <div class="category">
-                                            <a href="#" class="title collapsed" id="headingFive" data-toggle="collapse"
-                                                data-target="#collapseFive" aria-expanded="true"
-                                                aria-controls="collapseFive">
-                                                <i class="material-icons md-30 online">colorize</i>
-                                                <div class="data">
-                                                    <h5>Appearance</h5>
-                                                    <p>Customize the look of Swipe</p>
-                                                </div>
-                                                <i class="material-icons">keyboard_arrow_right</i>
-                                            </a>
-                                            <div class="collapse" id="collapseFive" aria-labelledby="headingFive"
-                                                data-parent="#accordionSettings">
-                                                <div class="content no-layer">
-                                                    <div class="set">
-                                                        <div class="details">
-                                                            <h5>Turn Off Lights</h5>
-                                                            <p>The dark mode is applied to core areas of the app that are
-                                                                normally displayed as light.</p>
-                                                        </div>
-                                                        <label class="switch">
-                                                            <input type="checkbox">
-                                                            <span class="slider round mode"></span>
-                                                        </label>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!-- End of Appearance Settings -->
-                                        <!-- Start of Language -->
-                                        <div class="category">
-                                            <a href="#" class="title collapsed" id="headingSix" data-toggle="collapse"
-                                                data-target="#collapseSix" aria-expanded="true" aria-controls="collapseSix">
-                                                <i class="material-icons md-30 online">language</i>
-                                                <div class="data">
-                                                    <h5>Language</h5>
-                                                    <p>Select preferred language</p>
-                                                </div>
-                                                <i class="material-icons">keyboard_arrow_right</i>
-                                            </a>
-                                            <div class="collapse" id="collapseSix" aria-labelledby="headingSix"
-                                                data-parent="#accordionSettings">
-                                                <div class="content layer">
-                                                    <div class="language">
-                                                        <label for="country">Language</label>
-                                                        <select class="custom-select" id="country" required>
-                                                            <option value="">Select an language...</option>
-                                                            <option>English, UK</option>
-                                                            <option>English, US</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!-- End of Language -->
-                                        <!-- Start of Privacy & Safety -->
-                                        <div class="category">
-                                            <a href="#" class="title collapsed" id="headingSeven" data-toggle="collapse"
-                                                data-target="#collapseSeven" aria-expanded="true"
-                                                aria-controls="collapseSeven">
-                                                <i class="material-icons md-30 online">lock_outline</i>
-                                                <div class="data">
-                                                    <h5>Privacy & Safety</h5>
-                                                    <p>Control your privacy settings</p>
-                                                </div>
-                                                <i class="material-icons">keyboard_arrow_right</i>
-                                            </a>
-                                            <div class="collapse" id="collapseSeven" aria-labelledby="headingSeven"
-                                                data-parent="#accordionSettings">
-                                                <div class="content no-layer">
-                                                    <div class="set">
-                                                        <div class="details">
-                                                            <h5>Keep Me Safe</h5>
-                                                            <p>Automatically scan and delete direct messages you receive
-                                                                from everyone that contain explict content.</p>
-                                                        </div>
-                                                        <label class="switch">
-                                                            <input type="checkbox">
-                                                            <span class="slider round"></span>
-                                                        </label>
-                                                    </div>
-                                                    <div class="set">
-                                                        <div class="details">
-                                                            <h5>My Friends Are Nice</h5>
-                                                            <p>If enabled scans direct messages from everyone unless they
-                                                                are listed as your friend.</p>
-                                                        </div>
-                                                        <label class="switch">
-                                                            <input type="checkbox" checked>
-                                                            <span class="slider round"></span>
-                                                        </label>
-                                                    </div>
-                                                    <div class="set">
-                                                        <div class="details">
-                                                            <h5>Everyone can add me</h5>
-                                                            <p>If enabled anyone in or out your friends of friends list can
-                                                                send you a friend request.</p>
-                                                        </div>
-                                                        <label class="switch">
-                                                            <input type="checkbox" checked>
-                                                            <span class="slider round"></span>
-                                                        </label>
-                                                    </div>
-                                                    <div class="set">
-                                                        <div class="details">
-                                                            <h5>Friends of Friends</h5>
-                                                            <p>Only your friends or your mutual friends will be able to send
-                                                                you a friend reuqest.</p>
-                                                        </div>
-                                                        <label class="switch">
-                                                            <input type="checkbox" checked>
-                                                            <span class="slider round"></span>
-                                                        </label>
-                                                    </div>
-                                                    <div class="set">
-                                                        <div class="details">
-                                                            <h5>Data to Improve</h5>
-                                                            <p>This settings allows us to use and process information for
-                                                                analytical purposes.</p>
-                                                        </div>
-                                                        <label class="switch">
-                                                            <input type="checkbox">
-                                                            <span class="slider round"></span>
-                                                        </label>
-                                                    </div>
-                                                    <div class="set">
-                                                        <div class="details">
-                                                            <h5>Data to Customize</h5>
-                                                            <p>This settings allows us to use your information to customize
-                                                                Swipe for you.</p>
-                                                        </div>
-                                                        <label class="switch">
-                                                            <input type="checkbox">
-                                                            <span class="slider round"></span>
-                                                        </label>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!-- End of Privacy & Safety -->
-                                        <!-- Start of Logout -->
-                                        <div class="category">
-                                            <a href="sign-in.html" class="title collapsed">
-                                                <i class="material-icons md-30 online">power_settings_new</i>
-                                                <div class="data">
-                                                    <h5>Power Off</h5>
-                                                    <p>Log out of your account</p>
-                                                </div>
-                                                <i class="material-icons">keyboard_arrow_right</i>
-                                            </a>
-                                        </div>
-                                        <!-- End of Logout -->
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- End of Settings -->
                         </div>
                     </div>
                 </div>
             </div>
             <!-- End of Sidebar -->
-            <!-- Start of Add Friends -->
-            <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered" role="document">
-                    <div class="requests">
-                        <div class="title">
-                            <h1>Add your friends</h1>
-                            <button type="button" class="btn" data-dismiss="modal" aria-label="Close"><i
-                                    class="material-icons">close</i></button>
-                        </div>
-                        <div class="content">
-                            <form>
-                                <div class="form-group">
-                                    <label for="user">Username:</label>
-                                    <input type="text" class="form-control" id="user" placeholder="Add recipient..."
-                                        required>
-                                    <div class="user" id="contact">
-                                        <img class="avatar-sm" src="dist/img/avatars/avatar-female-5.jpg" alt="avatar">
-                                        <h5>Keith Morris</h5>
-                                        <button class="btn"><i class="material-icons">close</i></button>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="welcome">Message:</label>
-                                    <textarea class="text-control" id="welcome"
-                                        placeholder="Send your welcome message...">Hi Keith, I'd like to add you as a contact.</textarea>
-                                </div>
-                                <button type="submit" class="btn button w-100">Send Friend Request</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- End of Add Friends -->
-            <!-- Start of Create Chat -->
-            <div class="modal fade" id="startnewchat" tabindex="-1" role="dialog" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered" role="document">
-                    <div class="requests">
-                        <div class="title">
-                            <h1>Start new chat</h1>
-                            <button type="button" class="btn" data-dismiss="modal" aria-label="Close"><i
-                                    class="material-icons">close</i></button>
-                        </div>
-                        <div class="content">
-                            <form>
-                                <div class="form-group">
-                                    <label for="participant">Recipient:</label>
-                                    <input type="text" class="form-control" id="participant" placeholder="Add recipient..."
-                                        required>
-                                    <div class="user" id="recipient">
-                                        <img class="avatar-sm" src="dist/img/avatars/avatar-female-5.jpg" alt="avatar">
-                                        <h5>Keith Morris</h5>
-                                        <button class="btn"><i class="material-icons">close</i></button>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="topic">Topic:</label>
-                                    <input type="text" class="form-control" id="topic" placeholder="What's the topic?"
-                                        required>
-                                </div>
-                            <div class="form-group">
-                                <label for="message">Message:</label>
-                                <textarea class="text-control" id="message"
-                                    placeholder="Send your welcome message...">Hmm, are you friendly?</textarea>
-                            </div>
-                            <button type="submit" class="btn button w-100">Start New Chat</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- End of Create Chat -->
+            <Create v-if="createStatus" @close="createStatus = false" />
         <KeepAlive :max="3">
             <Chat v-if="chatId" :key="chatId" :chatId="chatId" :profile="chats.find(v => v.id == chatId).member" />
         </KeepAlive>
-        <!-- <div v-else class="hidden lg:flex justify-center items-center h-screen">
+        <div v-if="!chatId" class="w-full hidden lg:flex justify-center items-center h-screen">
             <h1>Start Conversation At Left</h1>
-        </div> -->
+        </div>
     </div> <!-- Layout -->
 </main></template>
 <script>
 import UserStore from "@/state/User";
-import db from "@/utils/firebase/init";
-import Chat from "@/components/Chat";
-import Chats from "@/components/Chats";
-import { onMounted, ref } from "vue";
-import { collection, query, where, onSnapshot, documentId } from "firebase/firestore";
+import ChatStore from "@/state/Chat";
+import Chat from "@/components/Sidebar/Chat";
+import Chats from "@/components/Sidebar/Chats";
+import Create from "@/components/Chats/Create";
+import { onMounted, ref, computed, watch } from "vue";
+import { storeToRefs } from "pinia";
 export default {
     name: "Home",
     components: {
         Chat,
-        Chats
+        Chats,
+        Create
     },
     setup() {
         const user = UserStore();
-        let chats = ref([]);
+        const chat = ChatStore();
+        let chats = computed(() => chat.chats);
         let chatId = ref(null);
-        let q = "";
+        let createStatus = ref(false);
+        // let q = "";
 
         onMounted(() => {
-            q = query(collection(db, "chats"), where(documentId(), "in", user.chats))
-            onSnapshot(q, snapShot => {
-                snapShot.docChanges().forEach(snap => {
-                    if (snap.type === "added") {
-                        chats.value.push({
-                            id: snap.doc.id,
-                            lastMessageAt: snap.doc.data().lastMessageAt,
-                            lastMessage: snap.doc.data().lastMessage,
-                            member: snap.doc.data().members.find(v => v.id != user.firebaseID)
-                        })
-                    }
-                    if (snap.type === "modified") {
-                        let indexModified = chats.value.findIndex(v => v.id == snap.doc.id);
-                        if (indexModified != -1) {
-                            chats.value[indexModified].lastMessage = snap.doc.data().lastMessage;
-                            chats.value[indexModified].lastMessageAt = snap.doc.data().lastMessageAt;
-                        }
-                    }
-                    if (snap.type === "removed") {
-                        chats.value.splice(chats.value.findIndex(v => v.id == snap.doc.id), 1)
-                    }
-                });
-            }, error => {
-                console.log(error)
+            watch(() => storeToRefs(user.chats), () => {
+                chat.getChats();
+            }, {
+                immediate: true
             })
+            // q = query(collection(db, "chats"), where(documentId(), "in", user.chats))
+            // onSnapshot(q, snapShot => {
+            //     snapShot.docChanges().forEach(snap => {
+            //         if (snap.type === "added") {
+            //             chats.value.push({
+            //                 id: snap.doc.id,
+            //                 lastMessageAt: snap.doc.data().lastMessageAt,
+            //                 lastMessage: snap.doc.data().lastMessage,
+            //                 member: snap.doc.data().members.find(v => v.id != user.firebaseID)
+            //             })
+            //         }
+            //         if (snap.type === "modified") {
+            //             let indexModified = chats.value.findIndex(v => v.id == snap.doc.id);
+            //             if (indexModified != -1) {
+            //                 chats.value[indexModified].lastMessage = snap.doc.data().lastMessage;
+            //                 chats.value[indexModified].lastMessageAt = snap.doc.data().lastMessageAt;
+            //             }
+            //         }
+            //         if (snap.type === "removed") {
+            //             chats.value.splice(chats.value.findIndex(v => v.id == snap.doc.id), 1)
+            //         }
+            //     });
+            // }, error => {
+            //     console.log(error)
+            // })
         });
 
-        return { user, chatId, chats }
+        return { user, chatId, chats, createStatus }
     }
 }
 </script>

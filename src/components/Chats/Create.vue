@@ -41,7 +41,7 @@
 <script>
 import UserStore from '@/state/User'
 import ChatStore from '@/state/Chat'
-import db from "@/utils/firebase/init";
+import {db} from "@/utils/firebase/init";
 import { ref, inject } from "vue";
 import { collection, query, where, getDocs, limit } from "firebase/firestore";
 import Swal from 'sweetalert2';

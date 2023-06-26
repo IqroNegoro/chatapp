@@ -7,7 +7,7 @@
                     <button type="submit" class="btn send" @click.prevent="handleSubmit"><i class="material-icons">send</i></button>
                 </form>
                 <label>
-                    <input type="file">
+                    <input type="file" @onchange="handleUploadFile">
                     <span class="btn attach d-sm-block d-none"><i class="material-icons">attach_file</i></span>
                 </label> 
             </div>
@@ -16,13 +16,13 @@
 </template>
 <script>
 import { computed, ref } from 'vue'
-import db from "@/utils/firebase/init";
+import {db} from "@/utils/firebase/init";
 import { collection, addDoc, doc, updateDoc } from "firebase/firestore";
 import UserStore from '@/state/User';
 export default {
     name: "Input",
     props: ["messageId"],
-    setup({messageId}) {
+    setup({messageId}, {emit}) {
         const user = UserStore();
         let message = ref("");
         let id = computed(() => messageId);
@@ -41,12 +41,17 @@ export default {
                     lastMessage: message.value
                 });
                 message.value = "";
+                emit("down")
             } catch (err) {
                 console.log(err)
             }
         }
 
-        return { message, handleSubmit, id }
+        const handleFileUpload = e => {
+            console.log(e.target.files[0]);
+        }
+
+        return { message, handleSubmit, id, handleFileUpload }
     }
 }
 </script>

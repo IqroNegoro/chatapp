@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { getAuth, onAuthStateChanged, signOut, signInWithEmailAndPassword } from "firebase/auth";
 import { query, limit, where, collection, onSnapshot } from "firebase/firestore";
-import  db from "@/utils/firebase/init";
+import { db } from "@/utils/firebase/init";
 import Swal from "sweetalert2";
 import router from "@/router";
 import ChatStore from "./Chat";
@@ -32,6 +32,7 @@ const UserStore = defineStore("user", {
                 const q = query(collection(db, "users"), where("email", "==", email), limit(1));
 
                 this.snapUser = onSnapshot(q, snapShot => {
+                    this.chats = [];
                     this.$patch({
                         firebaseID: snapShot.docs[0].id,
                         displayName: snapShot.docs[0].data().displayName,

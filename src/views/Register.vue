@@ -56,7 +56,7 @@
 <script setup>
 import { ref, inject } from "vue"
 import { getDocs, limit, where, query, collection, addDoc } from "firebase/firestore";
-import db from "@/utils/firebase/init";
+import { db } from "@/utils/firebase/init";
 import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
 import Swal from "sweetalert2";
 import router from "@/router";

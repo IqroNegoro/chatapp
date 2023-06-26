@@ -28,7 +28,7 @@
                                 <div class="search">
                                     <form class="form-inline position-relative">
                                         <input type="search" class="form-control" id="conversations"
-                                            placeholder="Search for conversations...">
+                                            placeholder="Search for conversations..." v-model="searched">
                                         <button type="button" class="btn btn-link loop"><i
                                                 class="material-icons">search</i></button>
                                     </form>
@@ -36,7 +36,7 @@
                                 </div>
                                 <div class="discussions">
                                     <h1>Discussions</h1>
-                                    <Chats v-for="chats in chats.sort((a,b) => b.lastMessageAt - a.lastMessageAt)" :key="chats.id" :chats="chats" @chat-id="id => chatId = id" />
+                                    <Chats v-for="chats in searched ? chats.filter(v => v.member.displayName.toLowerCase().indexOf(searched.toLowerCase()) != -1).sort((a,b) => b.lastMessageAt - a.lastMessageAt) : chats.sort((a,b) => b.lastMessageAt - a.lastMessageAt)" :key="chats.id" :chats="chats" @chat-id="id => chatId = id" />
                                     <div v-if="!chats.length">
                                         <p class="text-center">There No Discussions Yet</p>
                                         <p class="text-center">Create New Chat!</p>
@@ -77,6 +77,7 @@ export default {
     setup() {
         const user = UserStore();
         const chat = ChatStore();
+        let searched = ref("");
         let chats = computed(() => chat.chats);
         let chatId = ref(null);
         let createStatus = ref(false);
@@ -90,7 +91,7 @@ export default {
             })
         });
 
-        return { user, chatId, chats, createStatus }
+        return { user, chatId, chats, createStatus, searched }
     }
 }
 </script>

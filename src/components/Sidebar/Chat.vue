@@ -36,7 +36,7 @@
                             </div>
                         </div>
                     </div>
-                    <Input :messageId="chatId" />
+                    <Input :messageId="chatId" @down="container.scrollTo(0,container.scrollHeight)" />
                 </div>
                 <!-- End of Chat -->
             </div>
@@ -49,7 +49,7 @@ import { collection, limit, onSnapshot, query, orderBy, getCountFromServer, doc,
 import Message from "@/components/Chats/Message";
 import Input from "@/components/Chats/Input";
 import moment from "moment/moment";
-import db from '@/utils/firebase/init';
+import {db} from '@/utils/firebase/init';
 import UserStore from "@/state/User";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 

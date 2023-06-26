@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import { query, where, collection, documentId, onSnapshot, updateDoc, arrayUnion, addDoc, doc } from "firebase/firestore";
-import  db from "@/utils/firebase/init";
+import { db } from "@/utils/firebase/init";
 import UserStore from "@/state/User";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 
@@ -19,6 +19,7 @@ const ChatStore = defineStore("chat", {
                     if (this.snapChats) this.snapChats();
                 } else {
                     if (this.snapChats) this.snapChats();
+                    this.chats = [];
                     q = query(collection(db, "chats"), where(documentId(), "in", user.chats))
                     this.snapChats = onSnapshot(q, snapShot => {
                         snapShot.docChanges().forEach(snap => {

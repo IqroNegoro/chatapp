@@ -1,43 +1,52 @@
 import { defineStore } from "pinia";
-import { query, limit, where, collection, documentId, onSnapshot, updateDoc, arrayUnion, addDoc, doc } from "firebase/firestore";
+import { query, where, collection, documentId, onSnapshot, updateDoc, arrayUnion, addDoc, doc } from "firebase/firestore";
 import  db from "@/utils/firebase/init";
 import UserStore from "@/state/User";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 const ChatStore = defineStore("chat", {
     state: () => ({
-        chats: []
+        chats: [],
+        snapChats: ""
     }),
     actions: {
         getChats() {
             const user = UserStore();
             let q = "";
-            let snap = "";
-            q = query(collection(db, "chats"), where(documentId(), "in", user.chats))
-            if (snap) snap();
-            snap = onSnapshot(q, snapShot => {
-                snapShot.docChanges().forEach(snap => {
-                    if (snap.type === "added") {
-                        this.chats.push({
-                            id: snap.doc.id,
-                            lastMessageAt: snap.doc.data().lastMessageAt,
-                            lastMessage: snap.doc.data().lastMessage,
-                            member: snap.doc.data().members.find(v => v.id != user.firebaseID)
-                        })
-                    }
-                    if (snap.type === "modified") {
-                        let indexModified = this.chats.findIndex(v => v.id == snap.doc.id);
-                        if (indexModified != -1) {
-                            chats[indexModified].lastMessage = snap.doc.data().lastMessage;
-                            chats[indexModified].lastMessageAt = snap.doc.data().lastMessageAt;
-                        }
-                    }
-                    if (snap.type === "removed") {
-                        this.chats.splice(this.chats.findIndex(v => v.id == snap.doc.id), 1)
-                    }
-                });
-            }, error => {
-                console.log(error)
+            
+            onAuthStateChanged(getAuth(), loggedUser => {
+                if (!loggedUser) {
+                    if (this.snapChats) this.snapChats();
+                } else {
+                    if (this.snapChats) this.snapChats();
+                    q = query(collection(db, "chats"), where(documentId(), "in", user.chats))
+                    this.snapChats = onSnapshot(q, snapShot => {
+                        snapShot.docChanges().forEach(snap => {
+                            if (snap.type === "added") {
+                                this.chats.push({
+                                    id: snap.doc.id,
+                                    lastMessageAt: snap.doc.data().lastMessageAt,
+                                    lastMessage: snap.doc.data().lastMessage,
+                                    member: snap.doc.data().members.find(v => v.id != user.firebaseID)
+                                })
+                            }
+                            if (snap.type === "modified") {
+                                let indexModified = this.chats.findIndex(v => v.id == snap.doc.id);
+                                if (indexModified != -1) {
+                                    this.chats[indexModified].lastMessage = snap.doc.data().lastMessage;
+                                    this.chats[indexModified].lastMessageAt = snap.doc.data().lastMessageAt;
+                                }
+                            }
+                            if (snap.type === "removed") {
+                                this.chats.splice(this.chats.findIndex(v => v.id == snap.doc.id), 1)
+                            }
+                        });
+                    }, error => {
+                        console.log(error)
+                    })
+                }
             })
+
         },
         async addChat(message, searchedUser) {
             try {

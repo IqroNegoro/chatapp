@@ -11,7 +11,7 @@
                             </button>
                             <a href="#discussions" data-toggle="tab" class="active"><i
                                     class="material-icons active">chat_bubble_outline</i></a>
-                            <button class="btn power" @click="user.logout"><i
+                            <button class="btn power" @click="() => {user.logout(); chatId = null}"><i
                                     class="material-icons">power_settings_new</i></button>
                         </div>
                     </div>
@@ -51,9 +51,9 @@
             </div>
             <!-- End of Sidebar -->
             <Create v-if="createStatus" @close="createStatus = false" />
-        <KeepAlive :max="3">
-            <Chat v-if="chatId" :key="chatId" :chatId="chatId" :profile="chats.find(v => v.id == chatId).member" />
-        </KeepAlive>
+        <!-- <KeepAlive :max="3"> -->
+            <Chat v-if="chatId" :chatId="chatId" :profile="chats.find(v => v.id == chatId).member" @back="chatId = null" />
+        <!-- </KeepAlive> -->
         <div v-if="!chatId" class="w-full hidden lg:flex justify-center items-center h-screen">
             <h1>Start Conversation At Left</h1>
         </div>
@@ -88,31 +88,6 @@ export default {
             }, {
                 immediate: true
             })
-            // q = query(collection(db, "chats"), where(documentId(), "in", user.chats))
-            // onSnapshot(q, snapShot => {
-            //     snapShot.docChanges().forEach(snap => {
-            //         if (snap.type === "added") {
-            //             chats.value.push({
-            //                 id: snap.doc.id,
-            //                 lastMessageAt: snap.doc.data().lastMessageAt,
-            //                 lastMessage: snap.doc.data().lastMessage,
-            //                 member: snap.doc.data().members.find(v => v.id != user.firebaseID)
-            //             })
-            //         }
-            //         if (snap.type === "modified") {
-            //             let indexModified = chats.value.findIndex(v => v.id == snap.doc.id);
-            //             if (indexModified != -1) {
-            //                 chats.value[indexModified].lastMessage = snap.doc.data().lastMessage;
-            //                 chats.value[indexModified].lastMessageAt = snap.doc.data().lastMessageAt;
-            //             }
-            //         }
-            //         if (snap.type === "removed") {
-            //             chats.value.splice(chats.value.findIndex(v => v.id == snap.doc.id), 1)
-            //         }
-            //     });
-            // }, error => {
-            //     console.log(error)
-            // })
         });
 
         return { user, chatId, chats, createStatus }

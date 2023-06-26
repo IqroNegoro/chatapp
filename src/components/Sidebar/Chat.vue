@@ -9,7 +9,9 @@
                         <div class="container">
                             <div class="col-md-12">
                                 <div class="inside">
-                                    <i class="bx bx-arrow-back text-2xl text-black mr-2 cursor-pointer"></i>
+                                    <button @click="$emit('back')">
+                                        <i class="bx bx-arrow-back text-2xl text-black mr-2 cursor-pointer"></i>
+                                    </button>
                                     <a href="#"><img class="avatar-md" :src="profile.photoURL" referrerpolicy="no-referrer" data-toggle="tooltip" data-placement="top" title="Keith" alt="avatar"></a>
                                     <div class="data">
                                         <h5><a href="#">{{profile.displayName}}</a></h5>
@@ -42,13 +44,15 @@
     </div>
 </template>
 <script>
-import { ref, onMounted, onDeactivated } from "vue";
+import { ref, onMounted, onDeactivated, onUnmounted } from "vue";
 import { collection, limit, onSnapshot, query, orderBy, getCountFromServer, doc, deleteDoc, updateDoc } from 'firebase/firestore';
 import Message from "@/components/Chats/Message";
 import Input from "@/components/Chats/Input";
 import moment from "moment/moment";
 import db from '@/utils/firebase/init';
 import UserStore from "@/state/User";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+
 export default {
     name: "Chat",
     components: {
@@ -56,13 +60,12 @@ export default {
         Input
     },
     props: ["chatId", "profile"],
-    setup({chatId}) {
+    setup({chatId, profile}) {
         const user = UserStore();
         let LIMIT_DOCS = 0;
         let container = ref(null);
         let infiniteScroll = ref(null);
         let showInfinite = ref(false);
-        let lastDoc = ref(null);
         let snap = "";
         let chats = ref([]);
 
@@ -76,6 +79,16 @@ export default {
             return new Date(date).toLocaleDateString('id-ID', options);
         };
      
+        onAuthStateChanged(getAuth(), user => {
+            if (!user) {
+                if (snap) snap();
+            }
+        })
+
+        onUnmounted(() => {
+            if (snap) snap();
+        });
+        
         onMounted(() => {
             let observer = new IntersectionObserver((entries, observer) => {
                 entries.forEach(async v => {

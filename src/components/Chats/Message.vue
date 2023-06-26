@@ -2,7 +2,7 @@
     <div class="message" :class="{'me': message.uid == user.uid}">
         <div class="text-main">
             <div class="text-group" :class="{'me': message.uid == user.uid}">
-                <div class="text text-black" :class="{'me text-white': message.uid == user.uid}" :id="message.id" @click.prevent.stop="handleClick" @contextmenu.prevent.stop="handleClick">
+                <div class="text text-white" :class="{'me text-white': message.uid == user.uid}" :id="message.id" @click.prevent.stop="handleClick" @contextmenu.prevent.stop="handleClick">
                     <p>{{message.message}}</p>
                 </div>
                 <div class="dropdown hidden absolute" v-if="message.uid == user.uid">

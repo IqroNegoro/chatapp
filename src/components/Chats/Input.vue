@@ -3,7 +3,7 @@
         <div class="col-md-12">
             <div class="bottom">
                 <form class="position-relative w-100" @submit.prevent="handleSubmit">
-                    <textarea class="form-control" style="color: black" placeholder="Start typing for reply..." rows="1" v-model="message"></textarea>
+                    <textarea class="text-black form-control" style="color: black" placeholder="Start typing for reply..." rows="1" v-model="message"></textarea>
                     <button type="submit" class="btn send" @click.prevent="handleSubmit"><i class="material-icons">send</i></button>
                 </form>
                 <label>

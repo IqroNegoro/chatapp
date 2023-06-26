@@ -52,7 +52,7 @@
             <!-- End of Sidebar -->
             <Create v-if="createStatus" @close="createStatus = false" />
         <!-- <KeepAlive :max="3"> -->
-            <Chat v-if="chatId" :chatId="chatId" :profile="chats.find(v => v.id == chatId).member" @back="chatId = null" />
+            <Chat v-if="chatId" :key="chatId" :chatId="chatId" :profile="chats.find(v => v.id == chatId).member" @back="chatId = null" />
         <!-- </KeepAlive> -->
         <div v-if="!chatId" class="w-full hidden lg:flex justify-center items-center h-screen">
             <h1>Start Conversation At Left</h1>

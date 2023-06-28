@@ -29,7 +29,7 @@ export default {
     props: ["message"],
     setup({message}) {
         const user = UserStore();
-        console.log(message)
+
         const handleClick = e => {
             e.target.nextElementSibling?.classList.remove('hidden');
         }

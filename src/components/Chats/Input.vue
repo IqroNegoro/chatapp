@@ -57,7 +57,6 @@ export default {
     
                 let uploadTask = uploadBytes(storageFolder, target.files[0]).then(snapshot => {
                     getDownloadURL(snapshot.ref).then(async res => {
-                        console.log(res)
                         await addDoc(collection(db, "messages", messageId, "messages"), {
                             sendAt: +new Date(),
                             isRead: false,

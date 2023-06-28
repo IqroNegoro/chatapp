@@ -1,72 +1,55 @@
 <template>
-    <main>
-        <div class="layout">
-            <!-- Start of Navigation -->
-            <div class="navigation">
-                <div class="container">
-                    <div class="inside">
-                        <div class="nav nav-tab menu">
-                            <button class="btn">
-                                <img class="avatar-xl" :src="user.photoURL || 'img/noimage.png'" referrerpolicy="no-referrer" alt="avatar">
-                            </button>
-                            <a href="#discussions" data-toggle="tab" class="active"><i
-                                    class="material-icons active">chat_bubble_outline</i></a>
-                            <button class="btn power" @click="() => {user.logout(); chatId = null}"><i
-                                    class="material-icons">power_settings_new</i></button>
+    <div class="sidebar" id="sidebar">
+        <div class="container">
+            <div class="col-md-12">
+                <div class="tab-content">
+                    <!-- Start of Discussions -->
+                    <div id="discussions" class="tab-pane fade active show">
+                        <div class="search">
+                            <form class="form-inline position-relative">
+                                <input type="search" class="form-control" id="conversations"
+                                    placeholder="Search for conversations..." v-model="searched">
+                                <button type="button" class="btn btn-link loop"><i
+                                        class="material-icons">search</i></button>
+                            </form>
+                            <button class="btn create" @click="createStatus = true"><i
+                                    class="material-icons">create</i></button>
                         </div>
-                    </div>
-                </div>
-            </div>
-            <!-- End of Navigation -->
-            <!-- Start of Sidebar -->
-            <div class="sidebar" id="sidebar">
-                <div class="container">
-                    <div class="col-md-12">
-                        <div class="tab-content">
-                            <!-- Start of Discussions -->
-                            <div id="discussions" class="tab-pane fade active show">
-                                <div class="search">
-                                    <form class="form-inline position-relative">
-                                        <input type="search" class="form-control" id="conversations"
-                                            placeholder="Search for conversations..." v-model="searched">
-                                        <button type="button" class="btn btn-link loop"><i
-                                                class="material-icons">search</i></button>
-                                    </form>
-                                    <button class="btn create" @click="createStatus = true"><i class="material-icons">create</i></button>
-                                </div>
-                                <div class="discussions">
-                                    <h1>Discussions</h1>
-                                    <Chats v-for="chats in searched ? chats.filter(v => v.member.displayName.toLowerCase().indexOf(searched.toLowerCase()) != -1).sort((a,b) => b.lastMessageAt - a.lastMessageAt) : chats.sort((a,b) => b.lastMessageAt - a.lastMessageAt)" :key="chats.id" :chats="chats" @chat-id="id => chatId = id" />
-                                    <div v-if="!chats.length">
-                                        <p class="text-center">There No Discussions Yet</p>
-                                        <p class="text-center">Create New Chat!</p>
-										<button class="mx-auto block px-2 pt-1 shadow-sm rounded-full mt-2 outline-none" @click="createStatus = true"><i class="bx bx-pencil text-2xl"></i></button>
-                                    </div>
-                                </div>
+                        <div class="discussions">
+                            <h1>Discussions</h1>
+                            <Chats
+                                v-for="chats in searched ? chats.filter(v => v.member.displayName.toLowerCase().indexOf(searched.toLowerCase()) != -1).sort((a, b) => b.lastMessageAt - a.lastMessageAt) : chats.sort((a, b) => b.lastMessageAt - a.lastMessageAt)"
+                                :key="chats.id" :chats="chats" @chat-id="id => chatId = id" />
+                            <div v-if="!chats.length">
+                                <p class="text-center">There No Discussions Yet</p>
+                                <p class="text-center">Create New Chat!</p>
+                                <button class="mx-auto block px-2 pt-1 shadow-sm rounded-full mt-2 outline-none"
+                                    @click="createStatus = true"><i class="bx bx-pencil text-2xl"></i></button>
                             </div>
-                            <!-- End of Discussions -->
                         </div>
                     </div>
+                    <!-- End of Discussions -->
                 </div>
             </div>
-            <!-- End of Sidebar -->
-            <Create v-if="createStatus" @close="createStatus = false" />
-        <!-- <KeepAlive :max="3"> -->
-            <Chat v-if="chatId" :key="chatId" :chatId="chatId" :profile="chats.find(v => v.id == chatId).member" @back="chatId = null" />
-        <!-- </KeepAlive> -->
-        <div v-if="!chatId" class="w-full hidden lg:flex justify-center items-center h-screen">
-            <h1>Start Conversation At Left</h1>
         </div>
-    </div> <!-- Layout -->
-</main></template>
+    </div>
+    <!-- End of Sidebar -->
+    <Create v-if="createStatus" @close="createStatus = false" />
+    <Chat v-if="chatId" :key="chatId" :chatId="chatId" :profile="chats.find(v => v.id == chatId).member"
+        @back="chatId = null" />
+    <div v-if="!chatId" class="w-full hidden lg:flex justify-center items-center h-screen">
+        <h1>Start Conversation At Left</h1>
+    </div>
+</template>
 <script>
 import UserStore from "@/state/User";
 import ChatStore from "@/state/Chat";
 import Chat from "@/components/Sidebar/Chat";
 import Chats from "@/components/Sidebar/Chats";
 import Create from "@/components/Chats/Create";
-import { onMounted, ref, computed, watch } from "vue";
+import { onMounted, ref, computed, watch, onUnmounted, onDeactivated } from "vue";
 import { storeToRefs } from "pinia";
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
 export default {
     name: "Home",
     components: {
@@ -90,6 +73,14 @@ export default {
                 immediate: true
             })
         });
+
+        onUnmounted(() => chatId.value = null);
+
+        onDeactivated(() => chatId.value = null);
+
+        onAuthStateChanged(getAuth(), user => {
+            if (!user) chatId.value = null;
+        })
 
         return { user, chatId, chats, createStatus, searched }
     }

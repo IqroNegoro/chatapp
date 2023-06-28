@@ -3,7 +3,8 @@
         <div class="text-main">
             <div class="text-group" :class="{'me': message.uid == user.uid}">
                 <div class="text text-white" :class="{'me text-white': message.uid == user.uid}" :id="message.id" @click.prevent.stop="handleClick" @contextmenu.prevent.stop="handleClick">
-                    <p>{{message.message}}</p>
+                    <p v-if="message.type == 'text'">{{message.message}}</p>
+                    <img v-else :src="message.url" alt="" class="w-1/2">
                 </div>
                 <div class="dropdown hidden absolute" v-if="message.uid == user.uid">
                     <div class="dropdown-menu dropdown-menu-right show">
@@ -28,7 +29,7 @@ export default {
     props: ["message"],
     setup({message}) {
         const user = UserStore();
-
+        console.log(message)
         const handleClick = e => {
             e.target.nextElementSibling?.classList.remove('hidden');
         }

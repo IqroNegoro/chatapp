@@ -13,6 +13,7 @@ const UserStore = defineStore("user", {
         email: "",
         photoURL: "",
         uid: "",
+        inviteID: "",
         chats: [],
         authenticated: false,
         snapUser: ""
@@ -31,7 +32,16 @@ const UserStore = defineStore("user", {
             signInWithEmailAndPassword(auth, email, password).then(async res => {
                 const q = query(collection(db, "users"), where("email", "==", email), limit(1));
 
+                if (this.snapUser) this.snapUser();
+
                 this.snapUser = onSnapshot(q, snapShot => {
+                    if (!snapShot.size) {
+                        this.snapUser();
+                        router.push({name: 'login'});
+                        this.emitter.emit("loginError", "Email Or Password Doesn't Exist!");
+                        this.emitter.emit("isLoading", false);
+                        return;
+                    }
                     this.chats = [];
                     this.$patch({
                         firebaseID: snapShot.docs[0].id,
@@ -39,6 +49,7 @@ const UserStore = defineStore("user", {
                         email: snapShot.docs[0].data().email,
                         photoURL: snapShot.docs[0].data().photoURL,
                         uid: snapShot.docs[0].data().uid,
+                        inviteID: snapShot.docs[0].data().inviteID,
                         chats: snapShot.docs[0].data().chats,
                         authenticated: true
                     })
@@ -68,6 +79,8 @@ const UserStore = defineStore("user", {
                     return;
                 }
 
+                console.log(err)
+
                 this.emitter.emit("loginError", "Something Went Wrong");
             });
         },
@@ -78,6 +91,7 @@ const UserStore = defineStore("user", {
                 router.push({name: 'login'});
                 this.$reset()
                 chat.$reset()
+                this.snapUser();
                 Swal.fire({
                     icon: "success",
                     title: "Success Logout",

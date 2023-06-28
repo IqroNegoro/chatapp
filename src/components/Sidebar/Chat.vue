@@ -108,7 +108,9 @@ export default {
                                                 sendAt: snap.doc.data().sendAt,
                                                 message: snap.doc.data().message,
                                                 isRead: snap.doc.data().isRead,
-                                                uid: snap.doc.data().uid
+                                                uid: snap.doc.data().uid,
+                                                type: snap.doc.data().type,
+                                                url: snap.doc.data().type == 'image' ? snap.doc.data().url : ""
                                             })
                                         }
                                     }

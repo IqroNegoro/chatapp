@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Home from "@/views/Home"
+import Setting from "@/views/Setting"
 import Register from "@/views/Register"
 import Login from "@/views/Login"
 import UserStore from '@/state/User'
@@ -22,6 +23,14 @@ const routes = [
       requiresAuth: true
     },
     component: Home
+  },
+  {
+    path: "/setting",
+    name: "setting",
+    meta: {
+      requiresAuth: true
+    },
+    component: Setting
   }
 ]
 

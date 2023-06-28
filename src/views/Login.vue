@@ -60,8 +60,8 @@ export default {
         let userState = UserStore();
         let emitter = inject("emitter");
         
-        let email = ref("freesia@gmail.com");
-        let password = ref("freesia");
+        let email = ref("iqronegoro0@gmail.com");
+        let password = ref("proevening11");
         let error = ref(null);
         
         const signInWithEmail = () => {

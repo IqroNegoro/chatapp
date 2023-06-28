@@ -1,7 +1,7 @@
 <template>
     <div class="fixed top-0 left-0 bg-black bg-opacity-50 w-full h-screen z-[9992]">
         <div class="modal fade show" id="startnewchat" tabindex="-1" role="dialog" style="display: block">
-            <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-dialog modal-dialog-centered mx-auto" role="document">
                 <div class="requests">
                     <div class="title">
                         <h1>Start new chat</h1>

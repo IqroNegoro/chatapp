@@ -28,7 +28,7 @@ const ChatStore = defineStore("chat", {
                                     id: snap.doc.id,
                                     lastMessageAt: snap.doc.data().lastMessageAt,
                                     lastMessage: snap.doc.data().lastMessage,
-                                    member: snap.doc.data().members.find(v => v.id != user.firebaseID)
+                                    member: snap.doc.data().members.find(v => v.id != user.firebaseID),
                                 })
                             }
                             if (snap.type === "modified") {
@@ -80,7 +80,8 @@ const ChatStore = defineStore("chat", {
                     isRead: false,
                     message: message,
                     sendAt: +new Date(),
-                    uid: user.uid
+                    uid: user.uid,
+                    type: "text",
                 });
                 user.chats.push(creatingChat.id);
                 this.emitter.emit("addChatSuccess");

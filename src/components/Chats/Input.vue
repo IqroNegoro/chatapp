@@ -8,7 +8,7 @@
                 </form>
                 <label>
                     <input type="file" @change="handleUploadFile">
-                    <span class="btn attach d-sm-block d-none"><i class="material-icons">attach_file</i></span>
+                    <span class="btn attach d-sm-block"><i class="material-icons">attach_file</i></span>
                 </label> 
             </div>
         </div>

@@ -6,7 +6,7 @@
                 :title="chats.displayName" alt="avatar" referrerpolicy="no-referrer">
             <div class="data truncate">
                 <h5>{{ chats.member.displayName }}</h5>
-                <span>{{ moment().calendar(chats.lastMessageAt) }}</span>
+                <span>{{ moment(chats.lastMessageAt).calendar() }}</span>
                 <p class="truncate">{{ chats.lastMessage }}</p>
             </div>
         </a>

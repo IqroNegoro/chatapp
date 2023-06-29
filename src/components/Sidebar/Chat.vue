@@ -15,7 +15,6 @@
                                     <a href="#"><img class="avatar-md" :src="profile.photoURL" referrerpolicy="no-referrer" data-toggle="tooltip" data-placement="top" title="Keith" alt="avatar"></a>
                                     <div class="data">
                                         <h5><a href="#">{{profile.displayName}}</a></h5>
-                                        <span>Active now</span>
                                     </div>
                                     <div class="dropdown">
                                         <button class="btn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="material-icons md-30">more_vert</i></button>
@@ -32,7 +31,7 @@
                             <div class="col-md-12">
                                 <div ref="infiniteScroll" class="wave w-full flex items-center justify-center" id="infiniteScroll" :class="{'hidden': showInfinite}"></div>
                                 <p class="text-center" v-if="showInfinite">Ini Chat Terakhir Mu</p>
-                                <Message v-for="chats in chats.sort((a,b) => a.sendAt - b.sendAt)" :key="chats.id" :message="chats" @delete-message="handleDeleteMessage" />
+                                <Message v-for="chats in chats.sort((a,b) => a.sendAt - b.sendAt)" :key="chats.id" :chatId="chatId" :message="chats" @delete-message="handleDeleteMessage" />
                             </div>
                         </div>
                     </div>

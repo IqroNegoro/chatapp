@@ -91,7 +91,6 @@ const UserStore = defineStore("user", {
                 router.push({name: 'login'});
                 this.$reset()
                 chat.$reset()
-                this.snapUser();
                 chat.snapUsers();
                 Swal.fire({
                     icon: "success",

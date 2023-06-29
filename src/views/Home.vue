@@ -17,9 +17,11 @@
                         </div>
                         <div class="discussions">
                             <h1>Discussions</h1>
-                            <Chats
+                            <TransitionGroup name="chats" tag="div" class="relative">
+                                <Chats
                                 v-for="chats in searched ? chats.filter(v => v.member.displayName.toLowerCase().indexOf(searched.toLowerCase()) != -1).sort((a, b) => b.lastMessageAt - a.lastMessageAt) : chats.sort((a, b) => b.lastMessageAt - a.lastMessageAt)"
                                 :key="chats.id" :chats="chats" @chat-id="id => chatId = id" />
+                            </TransitionGroup>
                             <div v-if="!chats.length">
                                 <p class="text-center">There No Discussions Yet</p>
                                 <p class="text-center">Create New Chat!</p>
@@ -67,7 +69,7 @@ export default {
 
         onMounted(() => {
             watch(() => storeToRefs(user.chats), () => {
-                chat.getChats();
+                    chat.getChats();
             }, {
                 immediate: true
             })
@@ -85,3 +87,13 @@ export default {
     }
 }
 </script>
+
+<style scoped>
+.chats-enter-active {
+  transition: all 0.5s ease;
+}
+.chats-enter-from {
+  opacity: 0;
+  transform: translateX(30px)
+}
+</style>

@@ -25,6 +25,7 @@ const ChatStore = defineStore("chat", {
                     this.chats = [];
                     q = query(collection(db, "chats"), where(documentId(), "in", user.chats))
                     this.snapChats = onSnapshot(q, snapShot => {
+                        console.log(snapShot.size);
                         snapShot.docChanges().forEach(snap => {
                             if (snap.type === "added") {
                                 let data = {
@@ -49,14 +50,23 @@ const ChatStore = defineStore("chat", {
                                 console.log(this.chats);
                             }
                             if (snap.type === "modified") {
-                                let indexModified = this.chats.findIndex(v => v == snap.doc.id);
+                                let indexModified = this.chats.findIndex(v => v.id == snap.doc.id);
                                 if (indexModified != -1) {
                                     this.chats[indexModified].lastMessage = snap.doc.data().lastMessage;
                                     this.chats[indexModified].lastMessageAt = snap.doc.data().lastMessageAt;
+                                    let tempOne;
+                                    let tempTwo;
+                                    tempOne = this.chats[0]
+                                    this.chats[0] = this.chats[indexModified];
+                                    for (let i = 1; i <= indexModified; i++) {
+                                        tempTwo = tempOne;
+                                        tempOne = this.chats[i];
+                                        this.chats[i] = tempTwo;
+                                    }
                                 }
                             }
                             if (snap.type === "removed") {
-                                this.chats.splice(this.chats.findIndex(v => v == snap.doc.id), 1)
+                                this.chats.splice(this.chats.findIndex(v => v.id == snap.doc.id), 1)
                             }
                         });
                     }, error => {

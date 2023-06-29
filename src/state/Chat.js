@@ -7,7 +7,8 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 const ChatStore = defineStore("chat", {
     state: () => ({
         chats: [],
-        snapChats: ""
+        snapChats: "",
+        snapUsers: ""
     }),
     actions: {
         getChats() {
@@ -17,29 +18,45 @@ const ChatStore = defineStore("chat", {
             onAuthStateChanged(getAuth(), loggedUser => {
                 if (!loggedUser) {
                     if (this.snapChats) this.snapChats();
+                    if (this.snapUsers) this.snapUsers();
                 } else {
                     if (this.snapChats) this.snapChats();
+                    if (this.snapUsers) this.snapUsers();
                     this.chats = [];
                     q = query(collection(db, "chats"), where(documentId(), "in", user.chats))
                     this.snapChats = onSnapshot(q, snapShot => {
                         snapShot.docChanges().forEach(snap => {
                             if (snap.type === "added") {
-                                this.chats.push({
+                                let data = {
                                     id: snap.doc.id,
                                     lastMessageAt: snap.doc.data().lastMessageAt,
                                     lastMessage: snap.doc.data().lastMessage,
-                                    member: snap.doc.data().members.find(v => v.id != user.firebaseID),
+                                    member: snap.doc.data().members.find(v => v != user.firebaseID),
+                                }
+                                this.chats.push(data);
+                                this.snapUsers = onSnapshot(doc(db, "users", data.member), userSnap => {
+                                    let findChat = this.chats.find(v => v.member == userSnap.id || v.member.id == userSnap.id);
+                                    console.log(userSnap.data())
+                                    console.log(findChat)
+                                    if (findChat) {
+                                        findChat.member = {
+                                            id: userSnap.id,
+                                            displayName: userSnap.data().displayName,
+                                            photoURL: userSnap.data().photoURL,
+                                        }
+                                    }
                                 })
+                                console.log(this.chats);
                             }
                             if (snap.type === "modified") {
-                                let indexModified = this.chats.findIndex(v => v.id == snap.doc.id);
+                                let indexModified = this.chats.findIndex(v => v == snap.doc.id);
                                 if (indexModified != -1) {
                                     this.chats[indexModified].lastMessage = snap.doc.data().lastMessage;
                                     this.chats[indexModified].lastMessageAt = snap.doc.data().lastMessageAt;
                                 }
                             }
                             if (snap.type === "removed") {
-                                this.chats.splice(this.chats.findIndex(v => v.id == snap.doc.id), 1)
+                                this.chats.splice(this.chats.findIndex(v => v == snap.doc.id), 1)
                             }
                         });
                     }, error => {
@@ -57,16 +74,18 @@ const ChatStore = defineStore("chat", {
                 lastMessage: message,
                 lastMessageAt: +new Date(),
                 members: [
-                    {
-                        displayName: user.displayName,
-                        id: user.firebaseID,
-                        photoURL: user.photoURL
-                    },
-                    {
-                        displayName: searchedUser.displayName,
-                        id: searchedUser.id,
-                        photoURL: searchedUser.photoURL
-                    }
+                    user.firebaseID,
+                    searchedUser.id
+                    // {
+                    //     displayName: user.displayName,
+                    //     id: user.firebaseID,
+                    //     photoURL: user.photoURL
+                    // },
+                    // {
+                    //     displayName: searchedUser.displayName,
+                    //     id: searchedUser.id,
+                    //     photoURL: searchedUser.photoURL
+                    // }
                 ]
             })
             if (creatingChat.id) {

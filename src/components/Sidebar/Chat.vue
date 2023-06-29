@@ -12,14 +12,17 @@
                                     <button @click="$emit('back')">
                                         <i class="bx bx-arrow-back text-2xl text-black mr-2 cursor-pointer"></i>
                                     </button>
-                                    <a href="#"><img class="avatar-md" :src="profile.photoURL" referrerpolicy="no-referrer" data-toggle="tooltip" data-placement="top" title="Keith" alt="avatar"></a>
+                                    <a href="#"><img class="avatar-md" :src="profile.photoURL" referrerpolicy="no-referrer"
+                                            data-toggle="tooltip" data-placement="top" title="Keith" alt="avatar"></a>
                                     <div class="data">
-                                        <h5><a href="#">{{profile.displayName}}</a></h5>
+                                        <h5><a href="#">{{ profile.displayName }}</a></h5>
                                     </div>
                                     <div class="dropdown">
-                                        <button class="btn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="material-icons md-30">more_vert</i></button>
+                                        <button class="btn" data-toggle="dropdown" aria-haspopup="true"
+                                            aria-expanded="false"><i class="material-icons md-30">more_vert</i></button>
                                         <div class="dropdown-menu dropdown-menu-right">
-                                            <button class="dropdown-item"><i class="material-icons">delete</i>Delete Contact</button>
+                                            <button class="dropdown-item"><i class="material-icons">delete</i>Delete
+                                                Contact</button>
                                         </div>
                                     </div>
                                 </div>
@@ -29,13 +32,15 @@
                     <div class="content" id="content" v-if="chats" ref="container">
                         <div class="container">
                             <div class="col-md-12">
-                                <div ref="infiniteScroll" class="wave w-full flex items-center justify-center" id="infiniteScroll" :class="{'hidden': showInfinite}"></div>
+                                <div ref="infiniteScroll" class="wave w-full flex items-center justify-center"
+                                    id="infiniteScroll" :class="{ 'hidden': showInfinite }"></div>
                                 <p class="text-center" v-if="showInfinite">Ini Chat Terakhir Mu</p>
-                                <Message v-for="chats in chats.sort((a,b) => a.sendAt - b.sendAt)" :key="chats.id" :chatId="chatId" :message="chats" @delete-message="handleDeleteMessage" />
+                                <Message v-for="chats in chats.sort((a, b) => a.sendAt - b.sendAt)" :key="chats.id"
+                                    :chatId="chatId" :message="chats" @delete-message="handleDeleteMessage" />
                             </div>
                         </div>
                     </div>
-                    <Input :messageId="chatId" @down="container.scrollTo(0,container.scrollHeight)" />
+                    <Input :messageId="chatId" @down="container.scrollTo(0, container.scrollHeight)" />
                 </div>
                 <!-- End of Chat -->
             </div>
@@ -48,9 +53,10 @@ import { collection, limit, onSnapshot, query, orderBy, getCountFromServer, doc,
 import Message from "@/components/Chats/Message";
 import Input from "@/components/Chats/Input";
 import moment from "moment/moment";
-import {db} from '@/utils/firebase/init';
+import { db } from '@/utils/firebase/init';
 import UserStore from "@/state/User";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
+import Swal from 'sweetalert2';
 
 export default {
     name: "Chat",
@@ -59,7 +65,7 @@ export default {
         Input
     },
     props: ["chatId", "profile"],
-    setup({chatId, profile}) {
+    setup({ chatId, profile }) {
         const user = UserStore();
         let LIMIT_DOCS = 0;
         let container = ref(null);
@@ -77,7 +83,7 @@ export default {
             };
             return new Date(date).toLocaleDateString('id-ID', options);
         };
-     
+
         onAuthStateChanged(getAuth(), user => {
             if (!user) {
                 if (snap) snap();
@@ -87,7 +93,7 @@ export default {
         onUnmounted(() => {
             if (snap) snap();
         });
-        
+
         onMounted(() => {
             let observer = new IntersectionObserver((entries, observer) => {
                 entries.forEach(async v => {
@@ -116,14 +122,20 @@ export default {
                                     if (snap.type === "modified") {
                                         let indexModified = chats.value.findIndex(v => v.id == snap.doc.id);
                                         if (indexModified != -1) {
-                                            chats.value.splice(indexModified, 1, {...snap.doc.data(), id: snap.doc.id, sendAt: snap.doc.data().sendAt})
+                                            chats.value.splice(indexModified, 1, { ...snap.doc.data(), id: snap.doc.id, sendAt: snap.doc.data().sendAt })
                                         }
                                     }
                                     if (snap.type === "removed") {
                                         chats.value.splice(chats.value.findIndex(v => v.id == snap.doc.id), 1)
                                     }
                                 });
-                            }, error => console.log(error))
+                            }, error => {
+                                Swal.fire({
+                                    icon: "error",
+                                    title: "Something Went Wrong",
+                                    timer: 3000
+                                })
+                            })
                         } else {
                             showInfinite.value = true;
                         }
@@ -136,7 +148,7 @@ export default {
             });
 
             observer.observe(infiniteScroll.value)
-            setTimeout(() => container.value?.scrollTo(0,9999), 1500)
+            setTimeout(() => container.value?.scrollTo(0, 9999), 1500)
         })
 
         let handleClick = e => {
@@ -159,7 +171,11 @@ export default {
                     })
                 }
             } catch (err) {
-                console.log(err)
+                Swal.fire({
+                    icon: "error",
+                    title: "Something Went Wrong",
+                    timer: 3000
+                })
             }
         }
 

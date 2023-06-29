@@ -77,7 +77,14 @@ export default {
                     emitter.emit("isLoading", false);
                 }
             } catch (err) {
-                console.log(err)
+                Swal.fire({
+                        icon: "error",
+                        title: "Something Went Wrong",
+                        timer: 3000,
+                        customClass: {
+                            container: "z-[9992]"
+                        }
+                    })
             }
         }
 

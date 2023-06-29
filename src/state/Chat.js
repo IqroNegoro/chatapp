@@ -25,7 +25,6 @@ const ChatStore = defineStore("chat", {
                     this.chats = [];
                     q = query(collection(db, "chats"), where(documentId(), "in", user.chats))
                     this.snapChats = onSnapshot(q, snapShot => {
-                        console.log(snapShot.size);
                         snapShot.docChanges().forEach(snap => {
                             if (snap.type === "added") {
                                 let data = {
@@ -37,8 +36,6 @@ const ChatStore = defineStore("chat", {
                                 this.chats.push(data);
                                 this.snapUsers = onSnapshot(doc(db, "users", data.member), userSnap => {
                                     let findChat = this.chats.find(v => v.member == userSnap.id || v.member.id == userSnap.id);
-                                    console.log(userSnap.data())
-                                    console.log(findChat)
                                     if (findChat) {
                                         findChat.member = {
                                             id: userSnap.id,
@@ -47,7 +44,6 @@ const ChatStore = defineStore("chat", {
                                         }
                                     }
                                 })
-                                console.log(this.chats);
                             }
                             if (snap.type === "modified") {
                                 let indexModified = this.chats.findIndex(v => v.id == snap.doc.id);
@@ -70,7 +66,12 @@ const ChatStore = defineStore("chat", {
                             }
                         });
                     }, error => {
-                        console.log(error)
+                        this.emitter.emit("isLoading", false)
+                        Swal.fire({
+                            icon: "error",
+                            title: "Something Went Wrong",
+                            timer: 3000
+                        })
                     })
                 }
             })
@@ -118,7 +119,11 @@ const ChatStore = defineStore("chat", {
             }
         } catch (err) {
             this.emitter.emit("isLoading", false);
-            console.log(err)
+            Swal.fire({
+                icon: "error",
+                title: "Something Went Wrong",
+                timer: 3000
+            })
         }
         }
     }

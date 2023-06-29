@@ -3,7 +3,7 @@
     <div :class="{'layout': hideElement}">
       <Navigation v-if="hideElement" />
       <Loading v-if="isLoading" />
-      <router-view />
+      <router-view :key="$route.name" />
     </div>
   </main>
 </template>

@@ -63,7 +63,6 @@ const UserStore = defineStore("user", {
                         router.push({name: "home"});
                     }
                 }, error => {
-                    console.log(error)
                     this.emitter.emit("isLoading", false);
                     this.emitter.emit("loginError", "Something Went Wrong");
                 })
@@ -79,8 +78,6 @@ const UserStore = defineStore("user", {
                     return;
                 }
 
-                console.log(err)
-
                 this.emitter.emit("loginError", "Something Went Wrong");
             });
         },
@@ -91,13 +88,18 @@ const UserStore = defineStore("user", {
                 router.push({name: 'login'});
                 this.$reset()
                 chat.$reset()
-                chat.snapUsers();
                 Swal.fire({
                     icon: "success",
                     title: "Success Logout",
                     timer: 3000
                 })
-            }).catch(err => console.log(err));
+            }).catch(err => {
+                Swal.fire({
+                    icon: "error",
+                    title: "Something Went Wrong",
+                    timer: 3000
+                })
+            });
         }
     }
 });

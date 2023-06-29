@@ -35,10 +35,10 @@
             </div>
         </div>
     </div>
-    <!-- End of Sidebar -->
+        <!-- End of Sidebar -->
     <Create v-if="createStatus" @close="createStatus = false" />
     <Chat v-if="chatId" :key="chatId" :chatId="chatId" :profile="chats.find(v => v.id == chatId).member"
-        @back="chatId = null" />
+    @back="chatId = null" />
     <div v-if="!chatId" class="w-full hidden lg:flex justify-center items-center h-screen">
         <h1>Start Conversation At Left</h1>
     </div>

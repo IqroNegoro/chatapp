@@ -3,13 +3,15 @@
         <div class="col-md-12">
             <div class="bottom">
                 <form class="position-relative w-100" @submit.prevent="handleSubmit">
-                    <textarea class="text-black form-control whitespace-normal" style="color: black" placeholder="Start typing for reply..." rows="1" v-model="message"></textarea>
-                    <button type="submit" class="btn send" @click.prevent="handleSubmit"><i class="material-icons">send</i></button>
+                    <textarea class="text-black form-control whitespace-normal" style="color: black"
+                        placeholder="Start typing for reply..." rows="1" v-model="message"></textarea>
+                    <button type="submit" class="btn send" @click.prevent="handleSubmit"><i
+                            class="material-icons">send</i></button>
                 </form>
                 <label>
                     <input type="file" @change="handleUploadFile">
                     <span class="btn attach d-sm-block"><i class="material-icons">attach_file</i></span>
-                </label> 
+                </label>
             </div>
         </div>
     </div>
@@ -25,7 +27,7 @@ import { nanoid } from 'nanoid';
 export default {
     name: "Input",
     props: ["messageId"],
-    setup({messageId}, {emit}) {
+    setup({ messageId }, { emit }) {
         const user = UserStore();
         let message = ref("");
         let id = computed(() => messageId);
@@ -47,14 +49,18 @@ export default {
                 message.value = "";
                 emit("down")
             } catch (err) {
-                console.log(err)
+                Swal.fire({
+                    icon: "error",
+                    title: "Something Went Wrong",
+                    timer: 3000
+                })
             }
         }
 
-        const handleUploadFile = ({target}) => {
+        const handleUploadFile = ({ target }) => {
             try {
                 const storageFolder = storageRef(storage, `image/${nanoid()}.${target.files[0].type.split("/")[1]}`);
-    
+
                 let uploadTask = uploadBytes(storageFolder, target.files[0]).then(snapshot => {
                     getDownloadURL(snapshot.ref).then(async res => {
                         await addDoc(collection(db, "messages", messageId, "messages"), {
@@ -66,9 +72,13 @@ export default {
                             url: res
                         })
                     })
-                })            
+                })
             } catch (err) {
-                console.log(err)
+                Swal.fire({
+                    icon: "error",
+                    title: "Something Went Wrong",
+                    timer: 3000
+                })
             }
         }
 

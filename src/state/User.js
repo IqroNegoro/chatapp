@@ -92,6 +92,7 @@ const UserStore = defineStore("user", {
                 this.$reset()
                 chat.$reset()
                 this.snapUser();
+                chat.snapUsers();
                 Swal.fire({
                     icon: "success",
                     title: "Success Logout",

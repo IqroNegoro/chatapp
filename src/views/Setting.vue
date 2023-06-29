@@ -215,6 +215,7 @@ export default {
         }
 
         const handlePreviewImage = ({target}) => {
+            console.log(target.files[0])
             if (!["jpg", "png", "jpeg"].includes(target.files[0].type.split("/")[1])) {
                 Swal.fire({
                     icon: "error",

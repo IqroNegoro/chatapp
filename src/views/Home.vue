@@ -64,7 +64,6 @@ export default {
         let chats = computed(() => chat.chats);
         let chatId = ref(null);
         let createStatus = ref(false);
-        // let q = "";
 
         onMounted(() => {
             watch(() => storeToRefs(user.chats), () => {

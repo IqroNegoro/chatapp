@@ -4,7 +4,7 @@
             <div class="text-group" :class="{'me': message.uid == user.uid}">
                 <div class="text text-white" :class="{'me text-white': message.uid == user.uid}" :id="message.id" @click.prevent.stop="handleClick" @contextmenu.prevent.stop="handleClick">
                     <p v-if="message.type == 'text'">{{message.message}}</p>
-                    <img v-else :src="message.url" alt="" class="w-1/2">
+                    <img v-if="message.type == 'image'" :src="message.url" alt="" class="img-fluid">
                 </div>
                 <div class="dropdown hidden absolute" v-if="message.uid == user.uid">
                     <div class="dropdown-menu dropdown-menu-right show">

@@ -61,18 +61,24 @@ export default {
 
         const handleUploadFile = ({ target }) => {
             try {
-                const storageFolder = storageRef(storage, `image/${nanoid()}.${target.files[0].type.split("/")[1]}`);
+                let pathImage = `${nanoid()}.${target.files[0].type.split("/")[1]}`
+                const storageFolder = storageRef(storage, `image/${pathImage}`);
 
                 let uploadTask = uploadBytes(storageFolder, target.files[0]).then(snapshot => {
                     getDownloadURL(snapshot.ref).then(async res => {
                         await addDoc(collection(db, "messages", messageId, "messages"), {
                             sendAt: +new Date(),
                             isRead: false,
-                            url: res,
                             uid: user.uid,
                             type: "image",
-                            url: res
+                            url: res,
+                            pathImage
                         })
+
+                        const updateLastMessage = await updateDoc(doc(db, "chats", messageId), {
+                            lastMessageAt: +new Date(),
+                            lastMessage: "Image"
+                        });
                     })
                 })
             } catch (err) {

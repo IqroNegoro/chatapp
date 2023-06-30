@@ -84,6 +84,7 @@ const handleSignUp = async () => {
                     displayName: fullName.value,
                     email: email.value,
                     photoURL: res.user.photoURL || 'img/noimage.png',
+                    photoURL: "",
                     uid: res.user.uid,
                     chats: ["empty"],
                     inviteID: nanoid()

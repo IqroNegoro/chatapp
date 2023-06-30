@@ -100,7 +100,7 @@ import { db, storage } from '@/utils/firebase/init';
 import Swal from "sweetalert2";
 import { collection, query, limit, where, getDocs, updateDoc, doc } from "firebase/firestore";
 import { getAuth, updateProfile, updateEmail, updatePassword, EmailAuthProvider, reauthenticateWithCredential } from "firebase/auth";
-import { ref as storageRef, uploadBytes, getDownloadURL } from "firebase/storage";
+import { ref as storageRef, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
 import { nanoid } from 'nanoid';
 export default {
     name: "Setting",
@@ -163,14 +163,22 @@ export default {
                 }
 
                 if (image.value) {
-                    const profile = storageRef(storage, `profile/${nanoid()}.${image.value.type.split("/")[1]}`);
+                    let nameProfile = nanoid();
+                    let path = `${nameProfile}.${image.value.type.split("/")[1]}`
+                    const profile = storageRef(storage, `profile/${path}`);
 
                     let uploadTask = uploadBytes(profile, image.value).then(snapshot => {
                         getDownloadURL(snapshot.ref).then(async res => {
+                            deleteObject(storageRef(storage, `profile/${user.pathProfile}`));
+
                             await updateDoc(userDoc, {
-                                photoURL: res
+                                photoURL: res,
+                                pathProfile: path
                             })
+
                         })
+                    }).catch(err => {
+                        console.log(err)
                     })
                 }
 
@@ -219,6 +227,15 @@ export default {
                 Swal.fire({
                     icon: "error",
                     title: "Please Upload An Image"
+                })
+                target.value = "";
+                return;
+            }
+
+            if (target.files[0].size > 3000000) {
+                Swal.fire({
+                    icon: "error",
+                    title: "Image must under 3mb"
                 })
                 target.value = "";
                 return;

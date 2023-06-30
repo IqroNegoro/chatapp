@@ -21,7 +21,7 @@
                                         <button class="btn" data-toggle="dropdown" aria-haspopup="true"
                                             aria-expanded="false"><i class="material-icons md-30">more_vert</i></button>
                                         <div class="dropdown-menu dropdown-menu-right">
-                                            <button class="dropdown-item"><i class="material-icons">delete</i>Delete
+                                            <button class="dropdown-item" @click="deleteChat"><i class="material-icons">delete</i>Delete
                                                 Contact</button>
                                         </div>
                                     </div>
@@ -49,14 +49,15 @@
 </template>
 <script>
 import { ref, onMounted, onDeactivated, onUnmounted } from "vue";
-import { collection, limit, onSnapshot, query, orderBy, getCountFromServer, doc, deleteDoc, updateDoc } from 'firebase/firestore';
+import { collection, limit, onSnapshot, query, orderBy, getCountFromServer, doc, deleteDoc, updateDoc, arrayRemove } from 'firebase/firestore';
 import Message from "@/components/Chats/Message";
 import Input from "@/components/Chats/Input";
 import moment from "moment/moment";
-import { db } from '@/utils/firebase/init';
+import { db, storage  } from '@/utils/firebase/init';
 import UserStore from "@/state/User";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import Swal from 'sweetalert2';
+import { deleteObject, ref as storageRef } from "firebase/storage";
 
 export default {
     name: "Chat",
@@ -65,7 +66,7 @@ export default {
         Input
     },
     props: ["chatId", "profile"],
-    setup({ chatId, profile }) {
+    setup({ chatId, profile }, {emit}) {
         const user = UserStore();
         let LIMIT_DOCS = 0;
         let container = ref(null);
@@ -73,16 +74,6 @@ export default {
         let showInfinite = ref(false);
         let snap = "";
         let chats = ref([]);
-
-        const showFormattedDate = (date) => {
-            const options = {
-                weekday: 'long',
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-            };
-            return new Date(date).toLocaleDateString('id-ID', options);
-        };
 
         onAuthStateChanged(getAuth(), user => {
             if (!user) {
@@ -115,7 +106,8 @@ export default {
                                                 isRead: snap.doc.data().isRead,
                                                 uid: snap.doc.data().uid,
                                                 type: snap.doc.data().type,
-                                                url: snap.doc.data().type == 'image' ? snap.doc.data().url : ""
+                                                url: snap.doc.data().type == 'image' ? snap.doc.data().url : "",
+                                                pathImage: snap.doc.data().type == 'image' ? snap.doc.data().pathImage : ""
                                             })
                                         }
                                     }
@@ -160,9 +152,21 @@ export default {
             }
         }
 
+        const deleteChat = async () => {
+            let id = chatId;
+            emit("back");
+            let updatingUser = await updateDoc(doc(db, "users", user.firebaseID), {
+                chats: arrayRemove(chatId)
+            });
+        }
+
         let handleDeleteMessage = async id => {
             try {
+                let findChat = chats.value.find(v => v.id == id);
                 let itsLatestMessage = chats.value[chats.value.length - 1];
+                if (findChat.type == 'image') {
+                    deleteObject(storageRef(storage, `image/${findChat.pathImage}`));
+                }
                 let deletedDoc = await deleteDoc(doc(db, "messages", chatId, "messages", id))
                 if (itsLatestMessage.id == id) {
                     let updateLatestMessage = updateDoc(doc(db, "chats", chatId), {
@@ -189,7 +193,7 @@ export default {
             document.removeEventListener("click", handleClick);
         })
 
-        return { chats, user, moment, showFormattedDate, container, infiniteScroll, showInfinite, handleDeleteMessage }
+        return { chats, user, moment, container, infiniteScroll, showInfinite, handleDeleteMessage, deleteChat }
     }
 }
 </script>

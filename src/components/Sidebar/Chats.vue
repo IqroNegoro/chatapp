@@ -7,7 +7,11 @@
             <div class="data truncate">
                 <h5>{{ chats.member.displayName }}</h5>
                 <span>{{ moment(chats.lastMessageAt).calendar() }}</span>
-                <p class="truncate">{{ chats.lastMessage }}</p>
+                <p v-if="chats.lastMessage == 'Image'" class="truncate">
+                    <i class="bx bxs-image-alt"></i>
+                    {{ chats.lastMessage }}                    
+                </p>
+                <p v-else class="truncate">{{ chats.lastMessage }}</p>
             </div>
         </a>
     </div>

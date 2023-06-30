@@ -17,7 +17,7 @@
     </div>
 </template>
 <script>
-import { computed, ref } from 'vue'
+import { computed, ref, onMounted, onUnmounted } from 'vue'
 import { db, storage } from "@/utils/firebase/init";
 import { collection, addDoc, doc, updateDoc } from "firebase/firestore";
 import UserStore from '@/state/User';
@@ -34,6 +34,7 @@ export default {
 
         const handleSubmit = async () => {
             try {
+                if (message.value) {
                 const docs = await addDoc(collection(db, "messages", messageId, "messages"), {
                     sendAt: +new Date(),
                     message: message.value,
@@ -48,6 +49,7 @@ export default {
                 });
                 message.value = "";
                 emit("down")
+            }
             } catch (err) {
                 Swal.fire({
                     icon: "error",
@@ -81,6 +83,20 @@ export default {
                 })
             }
         }
+
+        const handleEnter = e => {
+            if (e.code == 'Enter') {
+                handleSubmit();
+            }
+        }
+
+        onMounted(() => {
+            document.addEventListener("keydown", handleEnter)
+        })
+
+        onUnmounted(() => {
+            document.removeEventListener("keydown", handleEnter)
+        })
 
         return { message, handleSubmit, id, handleUploadFile }
     }

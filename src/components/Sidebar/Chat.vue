@@ -1,5 +1,5 @@
 <template>
-    <div class="main m-lg:fixed m-lg:top-0 m-lg:left-0">
+    <div class="main m-lg:fixed m-lg:top-0 m-lg:left-0 m-lg:z-[99999999]">
         <div class="tab-content" id="nav-tabContent">
             <!-- Start of Babble -->
             <div class="babble tab-pane fade active show" id="list-chat" role="tabpanel" aria-labelledby="list-chat-list">
